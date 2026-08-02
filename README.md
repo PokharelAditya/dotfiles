@@ -51,7 +51,8 @@ This allows the configuration files to remain inside this repository while appli
 Example:
 
 ```bash
-stow -d home nvim hypr waybar kitty rofi zsh
+cd dotfiles/home
+stow -t ~ nvim hypr waybar kitty rofi zsh
 ```
 
 ## System Configuration
