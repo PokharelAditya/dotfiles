@@ -1,0 +1,10 @@
+[user]
+	name = Aditya Pokharel
+	email = pokhareladitya.pro@gmail.com
+[core]
+	pager = /usr/sbin/bat -n --paging=always --wrap=never
+[alias]
+	lag = log --all --graph
+  loag = log --oneline --all --graph
+[init]
+	defaultBranch = main
