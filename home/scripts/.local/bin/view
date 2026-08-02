@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh 
+
+if [ -z "$1" ]; then
+  i="."
+else
+  i="$1"
+fi
+
+
+if [ -d "$i" ]; then
+  eza --tree --icons --color=always -L 2 "$i" "$2" | head -100
+
+elif [ -f "$i" ]; then
+  ftype=$(file --mime-type -b "$i")
+
+  case "$ftype" in
+    text/* | */xml | */json)
+      bat -n --color=always --line-range :100 "$i"
+      ;;
+    image/*)
+      kitty +kitten icat --clear; chafa --center on --size 28x28 "$i"
+      ;;
+    application/pdf)
+      pdftoppm -f 1 -l 1 -png {} /tmp/pdf_preview 2>/dev/null
+      kitty +kitten icat --silent /tmp/pdf_preview-1.png
+      ;;
+    *)
+      echo "File cannot be displayed"
+      ;;
+  esac
+
+else
+  echo "Usage: view <dir or file>"
+  exit 1
+fi
