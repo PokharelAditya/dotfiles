@@ -62,6 +62,8 @@ backup_private() {
         info "Initialising local git repo on USB..."
         sudo git -C "$MOUNT_POINT" init -q
         info "Git repo initialised at $MOUNT_POINT"
+        sudo git -C "$MOUNT_POINT" config user.email "pokhareladitya.pro@gmail.com"
+        sudo git -C "$MOUNT_POINT" config user.name "Aditya Pokharel"
     fi
 
     # 4. Sync home files
@@ -111,12 +113,12 @@ backup_private() {
     # 6. Git commit snapshot
     echo ""
     info "Committing snapshot to USB git repo..."
-    git -C "$MOUNT_POINT" add -A
-    if git -C "$MOUNT_POINT" diff --cached --quiet; then
+    sudo git -C "$MOUNT_POINT" add -A
+    if sudo git -C "$MOUNT_POINT" diff --cached --quiet; then
         info "Nothing new to commit — backup already up to date."
     else
         COMMIT_MSG="backup: $(date '+%Y-%m-%d %H:%M:%S')"
-        git -C "$MOUNT_POINT" commit -m "$COMMIT_MSG"
+        sudo git -C "$MOUNT_POINT" commit -m "$COMMIT_MSG"
         success "Snapshot committed: $COMMIT_MSG"
     fi
 
