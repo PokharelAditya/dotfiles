@@ -6,6 +6,9 @@ PRIVATE_HOME_FILES=(
     ".config/opencode"
     ".config/omniroute"
     ".config/sunshine"
+    ".config/kdeconnect"
+    ".config/YouTube Music/config.json"
+    ".zsh_history"
 )
 
 PRIVATE_SYSTEM_FILES=(
