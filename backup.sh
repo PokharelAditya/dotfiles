@@ -98,7 +98,7 @@ backup_private() {
 
             sudo mkdir -p "$(dirname "$DEST")"
             info "  rsync: ~/$entry"
-            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")/"
+            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")"
             success "  Done: ~/$entry"
         done
     fi
@@ -120,7 +120,7 @@ backup_private() {
 
             sudo mkdir -p "$(dirname "$DEST")"
             info "  rsync: $entry"
-            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
+            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")"
             success "  Done: $entry"
         done
     fi
@@ -137,10 +137,16 @@ backup_private() {
         success "Snapshot committed: $COMMIT_MSG"
     fi
 
+    # Copy dotfiles repo into USB if not already there
+    if [[ "$SCRIPT_DIR" != "$MOUNT_POINT/dotfiles" ]]; then
+        echo ""
+        info "Copying dotfiles repo to USB..."
+        sudo rsync -av --delete "$SCRIPT_DIR" "$MOUNT_POINT"
+        success "Dotfiles copied to USB."
+    fi
+
     echo ""
     success "Private backup complete."
-
-
 }
 
 # ─────────────────────────────────────────
@@ -167,9 +173,14 @@ backup_public() {
                 continue
             fi
 
+            if [[ "$(readlink -f "$SRC")" == "$(readlink -f "$DEST")" ]]; then
+                warn "Skipping (symlink detected): $SRC"
+                continue
+            fi
+
             mkdir -p "$(dirname "$DEST")"
             info "  rsync: ~/$SRC_REL → $DEST_REL"
-            rsync -av "$SRC" "$(dirname "$DEST")/"
+            rsync -av --delete "$SRC" "$(dirname "$DEST")"
             success "  Done: ~/$SRC_REL"
         done
     fi
@@ -190,9 +201,9 @@ backup_public() {
             fi
 
             sudo mkdir -p "$(dirname "$DEST")"
-            info "  rsync: $SRC_REL → $DEST_REL"
-            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
-            success "  Done: $SRC_REL"
+            info "  rsync: $SRC → $DEST"
+            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")"
+            success "  Done: $SRC"
         done
     fi
 
