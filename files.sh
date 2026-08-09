@@ -46,6 +46,5 @@ PUBLIC_SYSTEM_FILES=(
     "/boot/grub/themes"
     "/etc/sddm.conf"
     "/usr/share/sddm"
-    "/var/lib/AccountsService"
     "/etc/pacman.conf"
 )
