@@ -115,27 +115,29 @@ restore_public() {
             exit 1
         fi
 
-        # Collect unique stow packages
-        STOW_PACKAGES=()
         for entry in "${PUBLIC_HOME_FILES[@]}"; do
+            SRC=$(echo "$entry" | awk '{print $1}')
             PKG=$(echo "$entry" | awk '{print $2}')
-            # Add only if not already in the list
-            if [[ ! " ${STOW_PACKAGES[*]} " =~ " $PKG " ]]; then
-                STOW_PACKAGES+=("$PKG")
-            fi
-        done
-
-        for pkg in "${STOW_PACKAGES[@]}"; do
-            PKG_DIR="$SCRIPT_DIR/home/$pkg"
+            PKG_DIR="$SCRIPT_DIR/home/$PKG"
 
             if [[ ! -d "$PKG_DIR" ]]; then
-                warn "Skipping (not found in dotfiles): home/$pkg"
+                warn "Skipping (not found in dotfiles): home/$PKG"
                 continue
             fi
 
-            info "  stow: home/$pkg → ~/"
-            stow --dir="$SCRIPT_DIR/home" --target="$HOME" "$pkg"
-            success "  Done: home/$pkg"
+            if [[ "$(readlink -f "$HOME/$SRC")" == "$(readlink -f "$PKG_DIR/$SRC")" ]]; then
+                warn "Skipping (symlink detected): $SRC"
+                continue
+            fi
+
+            if [[ -e "$HOME/$SRC" ]]; then
+              info "  removing: $HOME/$SRC"
+              rm -r "$HOME/$SRC"
+            fi
+
+            info "  stow: home/$PKG → ~/"
+            stow --dir="$SCRIPT_DIR/home" --target="$HOME" "$PKG"
+            success "  Done: home/$PKG"
         done
     fi
 
