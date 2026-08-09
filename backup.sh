@@ -68,17 +68,18 @@ backup_private() {
 
     trap "info 'Unmounting USB...'; sudo umount '$MOUNT_POINT'; sudo rmdir '$MOUNT_POINT'; sudo cryptsetup close backup" EXIT
 
-    USB_HOME="$MOUNT_POINT/home"
-    USB_SYSTEM="$MOUNT_POINT/system"
+    USB_PRIVATE="$MOUNT_POINT/private"
+    USB_HOME="$USB_PRIVATE/home"
+    USB_SYSTEM="$USB_PRIVATE/system"
     sudo mkdir -p "$USB_HOME" "$USB_SYSTEM"
 
     # Init git repo on USB if not already present
-    if [[ ! -d "$MOUNT_POINT/.git" ]]; then
-        info "Initialising local git repo on USB..."
-        sudo git -C "$MOUNT_POINT" init -q
-        sudo git -C "$MOUNT_POINT" config user.email "pokhareladitya.pro@gmail.com"
-        sudo git -C "$MOUNT_POINT" config user.name "Aditya Pokharel"
-        info "Git repo initialised at $MOUNT_POINT"
+    if [[ ! -d "$USB_PRIVATE/.git" ]]; then
+        info "Initialising local git repo on USB private..."
+        sudo git -C "$USB_PRIVATE" init -q
+        sudo git -C "$USB_PRIVATE" config user.email "pokhareladitya.pro@gmail.com"
+        sudo git -C "$USB_PRIVATE" config user.name "Aditya Pokharel"
+        info "Git repo initialised at $USB_PRIVATE"
     fi
 
     # Sync home files
@@ -97,7 +98,7 @@ backup_private() {
 
             sudo mkdir -p "$(dirname "$DEST")"
             info "  rsync: ~/$entry"
-            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
+            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")/"
             success "  Done: ~/$entry"
         done
     fi
@@ -127,17 +128,19 @@ backup_private() {
     # Git commit snapshot
     echo ""
     info "Committing snapshot to USB git repo..."
-    sudo git -C "$MOUNT_POINT" add -A
-    if sudo git -C "$MOUNT_POINT" diff --cached --quiet; then
+    sudo git -C "$USB_PRIVATE" add -A
+    if sudo git -C "$USB_PRIVATE" diff --cached --quiet; then
         info "Nothing new to commit — backup already up to date."
     else
         COMMIT_MSG="backup: $(date '+%Y-%m-%d %H:%M:%S')"
-        sudo git -C "$MOUNT_POINT" commit -m "$COMMIT_MSG"
+        sudo git -C "$USB_PRIVATE" commit -m "$COMMIT_MSG"
         success "Snapshot committed: $COMMIT_MSG"
     fi
 
     echo ""
     success "Private backup complete."
+
+
 }
 
 # ─────────────────────────────────────────
@@ -219,7 +222,7 @@ backup_public() {
     read -rp "Push to GitHub? [y/N]: " PUSH_CHOICE
     if [[ "$PUSH_CHOICE" =~ ^[Yy]$ ]]; then
         info "Pushing to GitHub..."
-        git -C "$SCRIPT_DIR" push
+        git -C "$SCRIPT_DIR" push origin main
         success "Pushed to GitHub."
     else
         info "Skipped push. You can push manually later with: git push"
@@ -234,16 +237,16 @@ backup_public() {
 # ─────────────────────────────────────────
 echo ""
 echo "What do you want to back up?"
-echo "  1) Private files → USB drive"
-echo "  2) Public files  → dotfiles repo (GitHub)"
+echo "  1) Public files  → dotfiles repo (GitHub)"
+echo "  2) Private files → USB drive"
 echo "  3) Both"
 echo ""
 read -rp "Choose [1/2/3]: " CHOICE
 
 case "$CHOICE" in
-    1) backup_private ;;
-    2) backup_public ;;
-    3) backup_private
-       backup_public ;;
+    1) backup_public ;;
+    2) backup_private ;;
+    3) backup_public 
+       backup_private ;;
     *) error "Invalid choice '$CHOICE'."; exit 1 ;;
 esac
