@@ -13,7 +13,7 @@ warn()    { echo "[WARN] $*"; }
 error()   { echo "[ERR]  $*" >&2; }
 
 # ─────────────────────────────────────────
-# Private files to back up to USB
+# Private files → USB
 # ─────────────────────────────────────────
 PRIVATE_HOME_FILES=(
     ".ssh"
@@ -26,10 +26,27 @@ PRIVATE_SYSTEM_FILES=(
 )
 
 # ─────────────────────────────────────────
+# Public files → dotfiles repo
+# Each entry: "<src-relative-to-HOME> <dest-folder-in-dotfiles/home>"
+# ─────────────────────────────────────────
+PUBLIC_HOME_FILES=(
+    ".config/hypr          hypr"
+    ".zshrc                zsh"
+    ".p10k.zsh             zsh"
+    ".gitconfig            git"
+    ".local/bin            scripts"
+    "wallpapers            wallpapers"
+)
+
+# Each entry: "<src-relative-to-SYSTEM>"
+PUBLIC_SYSTEM_FILES=(
+    # e.g. "/etc/some-public-config"
+)
+
+# ─────────────────────────────────────────
 # Backup: Private → USB
 # ─────────────────────────────────────────
 backup_private() {
-    # 1. Ask for device
     echo ""
     read -rp "Enter USB device (e.g. /dev/sda1): " USB_DEV
 
@@ -43,74 +60,71 @@ backup_private() {
         exit 1
     fi
 
-    # 2. Mount the USB temporarily under /tmp
     info "Mounting $USB_DEV..."
-    sudo cryptsetup open "$USB_DEV" backup 
+    sudo cryptsetup open "$USB_DEV" backup
     MOUNT_POINT="/mnt/usb"
     sudo mkdir -p "$MOUNT_POINT"
     sudo mount "/dev/mapper/backup" "$MOUNT_POINT"
 
-    # Make sure we unmount on exit no matter what
     trap "info 'Unmounting USB...'; sudo umount '$MOUNT_POINT'; sudo rmdir '$MOUNT_POINT'; sudo cryptsetup close backup" EXIT
 
     USB_HOME="$MOUNT_POINT/home"
     USB_SYSTEM="$MOUNT_POINT/system"
     sudo mkdir -p "$USB_HOME" "$USB_SYSTEM"
 
-    # 3. Init git repo on USB if not already present
+    # Init git repo on USB if not already present
     if [[ ! -d "$MOUNT_POINT/.git" ]]; then
         info "Initialising local git repo on USB..."
         sudo git -C "$MOUNT_POINT" init -q
-        info "Git repo initialised at $MOUNT_POINT"
         sudo git -C "$MOUNT_POINT" config user.email "pokhareladitya.pro@gmail.com"
         sudo git -C "$MOUNT_POINT" config user.name "Aditya Pokharel"
+        info "Git repo initialised at $MOUNT_POINT"
     fi
 
-    # 4. Sync home files
+    # Sync home files
     if [[ ${#PRIVATE_HOME_FILES[@]} -gt 0 ]]; then
-      echo ""
-      info "Backing up private HOME files..."
+        echo ""
+        info "Backing up private HOME files..."
 
-      for entry in "${PRIVATE_HOME_FILES[@]}"; do
-          SRC="$HOME/$entry"
-          DEST="$USB_HOME/$entry"
+        for entry in "${PRIVATE_HOME_FILES[@]}"; do
+            SRC="$HOME/$entry"
+            DEST="$USB_HOME/$entry"
 
-          if [[ ! -e "$SRC" ]]; then
-              warn "Skipping (not found): $SRC"
-              continue
-          fi
+            if [[ ! -e "$SRC" ]]; then
+                warn "Skipping (not found): $SRC"
+                continue
+            fi
 
-          sudo mkdir -p "$(dirname "$DEST")"
-          info "  rsync: ~/$entry"
-          sudo rsync -av "$SRC" "$(dirname "$DEST")/"
-          success "  Done: ~/$entry"
-      done
+            sudo mkdir -p "$(dirname "$DEST")"
+            info "  rsync: ~/$entry"
+            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
+            success "  Done: ~/$entry"
+        done
     fi
 
-    # 5. Sync system files (requires sudo for reading protected paths)
+    # Sync system files
     if [[ ${#PRIVATE_SYSTEM_FILES[@]} -gt 0 ]]; then
-      echo ""
-      info "Backing up private SYSTEM files..."
+        echo ""
+        info "Backing up private SYSTEM files..."
 
-      for entry in "${PRIVATE_SYSTEM_FILES[@]}"; do
-          SRC="$entry"
-          # Strip leading slash so we get a relative path under USB_SYSTEM
-          REL="${entry#/}"
-          DEST="$USB_SYSTEM/$REL"
+        for entry in "${PRIVATE_SYSTEM_FILES[@]}"; do
+            SRC="$entry"
+            REL="${entry#/}"
+            DEST="$USB_SYSTEM/$REL"
 
-          if [[ ! -e "$SRC" ]]; then
-              warn "Skipping (not found): $SRC"
-              continue
-          fi
+            if [[ ! -e "$SRC" ]]; then
+                warn "Skipping (not found): $SRC"
+                continue
+            fi
 
-          sudo mkdir -p "$(dirname "$DEST")"
-          info "  rsync: $entry"
-          sudo rsync -av "$SRC" "$(dirname "$DEST")/"
-          success "  Done: $entry"
-      done
+            sudo mkdir -p "$(dirname "$DEST")"
+            info "  rsync: $entry"
+            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
+            success "  Done: $entry"
+        done
     fi
 
-    # 6. Git commit snapshot
+    # Git commit snapshot
     echo ""
     info "Committing snapshot to USB git repo..."
     sudo git -C "$MOUNT_POINT" add -A
@@ -127,20 +141,109 @@ backup_private() {
 }
 
 # ─────────────────────────────────────────
+# Backup: Public → dotfiles repo
+# ─────────────────────────────────────────
+backup_public() {
+    echo ""
+    info "Backing up public files to dotfiles repo..."
+
+    # Sync home files
+    if [[ ${#PUBLIC_HOME_FILES[@]} -gt 0 ]]; then
+        echo ""
+        info "Syncing public HOME files..."
+
+        for entry in "${PUBLIC_HOME_FILES[@]}"; do
+            SRC_REL=$(echo "$entry" | awk '{print $1}')
+            DEST_REL=$(echo "$entry" | awk '{print $2}')
+
+            SRC="$HOME/$SRC_REL"
+            DEST="$SCRIPT_DIR/home/$DEST_REL/$SRC_REL"
+
+            if [[ ! -e "$SRC" ]]; then
+                warn "Skipping (not found): $SRC"
+                continue
+            fi
+
+            mkdir -p "$(dirname "$DEST")"
+            info "  rsync: ~/$SRC_REL → $DEST_REL"
+            rsync -av "$SRC" "$(dirname "$DEST")/"
+            success "  Done: ~/$SRC_REL"
+        done
+    fi
+
+    # Sync system files
+    if [[ ${#PUBLIC_SYSTEM_FILES[@]} -gt 0 ]]; then
+        echo ""
+        info "Syncing public SYSTEM files..."
+
+        for entry in "${PUBLIC_SYSTEM_FILES[@]}"; do
+            SRC="$entry"
+            REL="${entry#/}"
+            DEST="$SCRIPT_DIR/system/$REL"
+
+            if [[ ! -e "$SRC" ]]; then
+                warn "Skipping (not found): $SRC"
+                continue
+            fi
+
+            sudo mkdir -p "$(dirname "$DEST")"
+            info "  rsync: $SRC_REL → $DEST_REL"
+            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
+            success "  Done: $SRC_REL"
+        done
+    fi
+
+    # Save package lists
+    echo ""
+    info "Saving package lists..."
+    mkdir -p "$SCRIPT_DIR/packages"
+    pacman -Qqen > "$SCRIPT_DIR/packages/official.txt"
+    success "Official packages saved."
+    pacman -Qqem > "$SCRIPT_DIR/packages/aur.txt"
+    success "AUR packages saved."
+
+    # Git commit
+    echo ""
+    info "Committing to dotfiles repo..."
+    git -C "$SCRIPT_DIR" add -A
+    if git -C "$SCRIPT_DIR" diff --cached --quiet; then
+        info "Nothing new to commit — dotfiles already up to date."
+    else
+        COMMIT_MSG="backup: $(date '+%Y-%m-%d %H:%M:%S')"
+        git -C "$SCRIPT_DIR" commit -m "$COMMIT_MSG"
+        success "Committed: $COMMIT_MSG"
+    fi
+
+    # Push to GitHub
+    echo ""
+    read -rp "Push to GitHub? [y/N]: " PUSH_CHOICE
+    if [[ "$PUSH_CHOICE" =~ ^[Yy]$ ]]; then
+        info "Pushing to GitHub..."
+        git -C "$SCRIPT_DIR" push
+        success "Pushed to GitHub."
+    else
+        info "Skipped push. You can push manually later with: git push"
+    fi
+
+    echo ""
+    success "Public backup complete."
+}
+
+# ─────────────────────────────────────────
 # Main menu
 # ─────────────────────────────────────────
 echo ""
 echo "What do you want to back up?"
 echo "  1) Private files → USB drive"
-echo "  2) Public files → GitHub repo  (not yet implemented)"
+echo "  2) Public files  → dotfiles repo (GitHub)"
 echo "  3) Both"
 echo ""
 read -rp "Choose [1/2/3]: " CHOICE
 
 case "$CHOICE" in
     1) backup_private ;;
-    2) echo "Public backup not yet implemented." ;;
+    2) backup_public ;;
     3) backup_private
-       echo "Public backup not yet implemented." ;;
+       backup_public ;;
     *) error "Invalid choice '$CHOICE'."; exit 1 ;;
 esac
