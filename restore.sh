@@ -115,6 +115,9 @@ restore_public() {
             exit 1
         fi
 
+        declare -A seen_pkgs=()
+        UNIQUE_PKGS=()
+
         for entry in "${PUBLIC_HOME_FILES[@]}"; do
             SRC=$(echo "$entry" | awk '{print $1}')
             PKG=$(echo "$entry" | awk '{print $2}')
@@ -135,6 +138,13 @@ restore_public() {
               rm -r "$HOME/$SRC"
             fi
 
+            if [[ -z "${seen_pkgs[$PKG]:-}" ]]; then
+                seen_pkgs[$PKG]=1
+                UNIQUE_PKGS+=("$PKG")
+            fi
+        done
+
+        for PKG in "${UNIQUE_PKGS[@]}"; do
             info "  stow: home/$PKG → ~/"
             stow --dir="$SCRIPT_DIR/home" --target="$HOME" "$PKG"
             success "  Done: home/$PKG"
