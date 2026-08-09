@@ -1,0 +1,105 @@
+// __        __          _                 
+// \ \      / /_ _ _   _| |__   __ _ _ __  
+//  \ \ /\ / / _` | | | | '_ \ / _` | '__| 
+//   \ V  V / (_| | |_| | |_) | (_| | |    
+//    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    
+//                 |___/                   
+//  
+// by Stephan Raabe (2023) 
+// ----------------------------------------------------- 
+//
+
+[
+//laptop screen 
+{
+    // General Settings
+    "layer": "top",
+    "position": "top",
+    "margin-top": 8,
+    "margin-bottom": 0,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+    //"output": ["eDP-1", "eDP-2"],
+    "output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
+
+    // Load Modules
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    // Modules Left
+    "modules-left": [
+        "custom/arch_logo",
+        "hyprland/workspaces",
+        "custom/updates",
+        //"custom/appmenu",
+        //"group/links",
+        //"group/quicklinks",
+        "wlr/taskbar",
+        "hyprland/window"
+    ],
+
+    // Modules Center
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    // Modules Right    
+    "modules-right": [
+        "pulseaudio",
+        "backlight",
+        "bluetooth",
+        //"network",
+        "battery",
+        "cpu",
+        //"group/hardware",
+        //"group/tools",
+        "power-profiles-daemon",
+        "tray",
+        "custom/notification",
+        //"custom/ml4w-welcome",
+        "custom/hypridle",
+        "clock"
+        //custom/hyprshade",
+        //"custom/exit"
+    ]
+},
+
+//external screens
+{
+    // General Settings
+    "layer": "top",
+    "position": "top",
+    "margin-top": 8,
+    "margin-bottom": 0,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+    //"output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
+    "output": ["eDP-1", "eDP-2"],
+
+    // Load Modules
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    // Modules Left
+    "modules-left": [
+        "hyprland/workspaces",
+        "wlr/taskbar",
+    ],
+
+    // Modules Center
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    // Modules Right    
+    "modules-right": [
+        "hyprland/window"
+    ]
+},
+]

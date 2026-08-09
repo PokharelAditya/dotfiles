@@ -1,0 +1,22 @@
+title-text: ""
+desktop-image: "background.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-border: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+
++ boot_menu {
+  left = 12
+  top = 20%
+  width = 80%
+  height = 80%
+  item_color = "#cccccc"
+  selected_item_color = "#cc0000"
+  item_height = 80
+  item_icon_space = 20
+  item_padding = 10
+  item_spacing = 80
+  icon_height = 50
+  icon_width = 50
+}
