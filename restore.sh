@@ -172,7 +172,7 @@ restore_public() {
 
     if [[ -f "$OFFICIAL" ]]; then
         info "Installing official packages..."
-        sudo pacman -S --needed - < "$OFFICIAL"
+        awk '{print $1}' "$OFFICIAL" | sudo pacman -S --needed -
         success "Official packages installed."
     else
         warn "Official package list not found: $OFFICIAL"
@@ -190,7 +190,7 @@ restore_public() {
 
         if [[ -n "$AUR_HELPER" ]]; then
             info "Installing AUR packages with $AUR_HELPER..."
-            "$AUR_HELPER" -S --needed - < "$AUR"
+            awk '{print $1}' "$AUR" | "$AUR_HELPER" -S --needed -
             success "AUR packages installed."
         fi
     else

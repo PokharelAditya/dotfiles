@@ -1,19 +1,21 @@
-asusctl
-bibata-cursor-theme-bin
-brave-bin
-digital-logic-sim-bin
-discover-overlay
-esp-idf
-grub-customizer
-mpvpaper
-pear-desktop
-postman-bin
-qt6ct-kde
-rog-control-center
-sbctl-dracut-conf
-sddm-silent-theme
-snapd
-supergfxctl
-xorgxrdp
-xrdp
-yay
+antigravity-cli 1.1.7_5951805767680000-1
+asusctl 6.3.8-1
+bibata-cursor-theme-bin 2.0.7-1
+brave-bin 1:1.93.129-1
+digital-logic-sim-bin v2.1.6-1
+discover-overlay 0.7.8-1
+esp-idf 6.0.2-1
+grub-customizer 5.2.8-2
+kiro-account-manager-bin 1.9.2-1
+mpvpaper 1.9-1
+pear-desktop 3.12.0-1
+postman-bin 12.21.9-1
+qt6ct-kde 0.11-7
+rog-control-center 6.3.8-1
+sbctl-dracut-conf 0.0.7-1
+sddm-silent-theme 1.5.0-1
+snapd 2.76-1
+supergfxctl 5.2.7-2
+xorgxrdp 0.10.5-1
+xrdp 0.10.6.1-1
+yay 13.0.1-1
