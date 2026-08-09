@@ -145,21 +145,19 @@ restore_public() {
         info "Restoring public SYSTEM files..."
 
         for entry in "${PUBLIC_SYSTEM_FILES[@]}"; do
-            SRC_REL=$(echo "$entry" | awk '{print $1}')
-            DEST_REL=$(echo "$entry" | awk '{print $2}')
-
-            SRC="$SCRIPT_DIR/system/$DEST_REL"
-            DEST="$SRC_REL"
+            REL="${entry#/}"
+            SRC="$SCRIPT_DIR/system/$REL"
+            DEST="$entry"
 
             if [[ ! -e "$SRC" ]]; then
-                warn "Skipping (not found in dotfiles): system/$DEST_REL"
+                warn "Skipping (not found in dotfiles): $SRC"
                 continue
             fi
 
             sudo mkdir -p "$(dirname "$DEST")"
-            info "  rsync: system/$DEST_REL → $SRC_REL"
-            sudo rsync -av "$SRC" "$(dirname "$DEST")/"
-            success "  Done: $SRC_REL"
+            info "  rsync: $SRC → $DEST"
+            sudo rsync -av --delete "$SRC" "$(dirname "$DEST")"
+            success "  Done: $SRC"
         done
     fi
 
