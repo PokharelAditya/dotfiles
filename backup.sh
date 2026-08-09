@@ -13,35 +13,9 @@ warn()    { echo "[WARN] $*"; }
 error()   { echo "[ERR]  $*" >&2; }
 
 # ─────────────────────────────────────────
-# Private files → USB
+# File lists (shared with restore.sh)
 # ─────────────────────────────────────────
-PRIVATE_HOME_FILES=(
-    ".ssh"
-    ".config/opencode"
-    ".config/omniroute"
-)
-
-PRIVATE_SYSTEM_FILES=(
-    "/etc/NetworkManager/system-connections"
-)
-
-# ─────────────────────────────────────────
-# Public files → dotfiles repo
-# Each entry: "<src-relative-to-HOME> <dest-folder-in-dotfiles/home>"
-# ─────────────────────────────────────────
-PUBLIC_HOME_FILES=(
-    ".config/hypr          hypr"
-    ".zshrc                zsh"
-    ".p10k.zsh             zsh"
-    ".gitconfig            git"
-    ".local/bin            scripts"
-    "wallpapers            wallpapers"
-)
-
-# Each entry: "<src-relative-to-SYSTEM>"
-PUBLIC_SYSTEM_FILES=(
-    # e.g. "/etc/some-public-config"
-)
+source "$SCRIPT_DIR/files.sh"
 
 # ─────────────────────────────────────────
 # Backup: Private → USB
@@ -211,9 +185,9 @@ backup_public() {
     echo ""
     info "Saving package lists..."
     mkdir -p "$SCRIPT_DIR/packages"
-    pacman -Qqen > "$SCRIPT_DIR/packages/official.txt"
+    pacman -Qen > "$SCRIPT_DIR/packages/official.txt"
     success "Official packages saved."
-    pacman -Qqem > "$SCRIPT_DIR/packages/aur.txt"
+    pacman -Qem > "$SCRIPT_DIR/packages/aur.txt"
     success "AUR packages saved."
 
     # Git commit
