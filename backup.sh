@@ -46,7 +46,7 @@ backup_private() {
     # 2. Mount the USB temporarily under /tmp
     info "Mounting $USB_DEV..."
     sudo cryptsetup open "$USB_DEV" backup 
-    MOUNT_POINT="/tmp/usb_backup_$$"
+    MOUNT_POINT="/mnt/usb"
     sudo mkdir -p "$MOUNT_POINT"
     sudo mount "/dev/mapper/backup" "$MOUNT_POINT"
 
