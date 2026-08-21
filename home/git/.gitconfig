@@ -4,7 +4,7 @@
 [core]
 	pager = /usr/sbin/bat -n --paging=always --wrap=never
 [alias]
-	lag = log --all --graph
+  lag = log --all --graph --date=local
   loag = log --oneline --all --graph
 [init]
 	defaultBranch = main
