@@ -22,7 +22,7 @@ source "$SCRIPT_DIR/files.sh"
 # ─────────────────────────────────────────
 backup_private() {
     echo ""
-    read -rp "Enter USB device (e.g. /dev/sda1): " USB_DEV
+    read -rp "Enter USB device encrypted with cryptsetup (e.g. /dev/sda1): " USB_DEV
 
     if [[ -z "$USB_DEV" ]]; then
         error "No device provided. Aborting."
@@ -34,13 +34,15 @@ backup_private() {
         exit 1
     fi
 
-    info "Mounting $USB_DEV..."
-    sudo cryptsetup open "$USB_DEV" backup
-    MOUNT_POINT="/mnt/usb"
-    sudo mkdir -p "$MOUNT_POINT"
-    sudo mount "/dev/mapper/backup" "$MOUNT_POINT"
+    TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 
-    trap "info 'Unmounting USB...'; sudo umount '$MOUNT_POINT'; sudo rmdir '$MOUNT_POINT'; sudo cryptsetup close backup" EXIT
+    info "Mounting $USB_DEV..."
+    sudo cryptsetup open "$USB_DEV" "$TIMESTAMP" 
+    MOUNT_POINT="/tmp/$TIMESTAMP"
+    sudo mkdir -p "$MOUNT_POINT"
+    sudo mount "/dev/mapper/$TIMESTAMP" "$MOUNT_POINT"
+
+    trap "info 'Unmounting USB...'; sudo umount '$MOUNT_POINT'; sudo rmdir '$MOUNT_POINT'; sudo cryptsetup close '$TIMESTAMP'" EXIT
 
     USB_PRIVATE="$MOUNT_POINT/private"
     USB_HOME="$USB_PRIVATE/home"
