@@ -27,6 +27,10 @@ The goal is not to create a full system image, but to maintain a reproducible co
 │   ├── official.txt        # Official repository packages
 │   └── aur.txt             # AUR packages
 │
+├── services/                # Enabled service lists
+│   ├── system.txt          # System-level services
+│   └── user.txt            # User-level services
+│
 ├── backup.sh               # Automated backup script
 ├── restore.sh              # Automated restore script
 └── files.sh                # File definitions for backup/restore
@@ -86,6 +90,7 @@ Choose what to back up:
 **For public files:**
 * Syncs configuration files from `files.sh` to `home/` and `system/`
 * Saves installed package lists (`official.txt`, `aur.txt`)
+* Saves enabled service lists (`system.txt`, `user.txt`)
 * Creates a git commit with timestamp
 * Optionally pushes to GitHub
 
@@ -109,20 +114,29 @@ chmod +x restore.sh
 Choose what to restore:
 1. Public files ← dotfiles repo
 2. Private files ← USB drive
-3. Both
+3. Packages
+4. Services
+5. All
 
 ### What It Does
 
 **For public files:**
 * Restores home configs using **GNU Stow** (creates symlinks)
 * Copies system configs to `/etc`, `/boot`, etc.
-* Installs packages from `official.txt` (pacman)
-* Installs AUR packages from `aur.txt` (yay/paru)
 
 **For private files:**
 * Mounts encrypted USB drive
 * Restores sensitive files to home directory
 * Restores system files (like NetworkManager connections)
+
+**For packages:**
+* Installs packages from `official.txt` (pacman)
+* Installs AUR packages from `aur.txt` (yay/paru)
+
+**For services:**
+* Enables system services from `services/system.txt` via `systemctl enable`
+* Enables user services from `services/user.txt` via `systemctl --user enable`
+* Services are registered for next boot/login, not started immediately
 
 ### How Stow Works
 

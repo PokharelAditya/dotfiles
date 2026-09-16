@@ -1,0 +1,13 @@
+accounts-daemon.service
+acpid.service
+bluetooth.service
+getty@.service
+NetworkManager-dispatcher.service
+NetworkManager-wait-online.service
+NetworkManager.service
+sddm.service
+seatd.service
+snapd.apparmor.service
+supergfxd.service
+systemd-timesyncd.service
+tlp.service

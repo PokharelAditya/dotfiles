@@ -190,6 +190,15 @@ backup_public() {
     pacman -Qem > "$SCRIPT_DIR/packages/aur.txt"
     success "AUR packages saved."
 
+    # Save enabled services
+    echo ""
+    info "Saving enabled services..."
+    mkdir -p "$SCRIPT_DIR/services"
+    systemctl list-unit-files --state=enabled --no-pager --no-legend --type=service | awk '{print $1}' > "$SCRIPT_DIR/services/system.txt"
+    success "System services saved."
+    systemctl --user list-unit-files --state=enabled --no-pager --no-legend --type=service | awk '{print $1}' > "$SCRIPT_DIR/services/user.txt"
+    success "User services saved."
+
     # Git commit
     echo ""
     info "Committing to dotfiles repo..."
@@ -220,9 +229,14 @@ backup_public() {
 # ─────────────────────────────────────────
 # Main menu
 # ─────────────────────────────────────────
+
+echo ""
+info "AVOID USING SUDO TO RUN THIS SCRIPT"
+echo ""
+
 echo ""
 echo "What do you want to back up?"
-echo "  1) Public files  → dotfiles repo (GitHub)"
+echo "  1) Public files with packages and services → dotfiles repo (GitHub)"
 echo "  2) Private files → USB drive"
 echo "  3) Both"
 echo ""

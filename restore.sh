@@ -173,7 +173,14 @@ restore_public() {
         done
     fi
 
-    # Install packages
+    echo ""
+    success "Public restore complete."
+}
+
+# ─────────────────────────────────────────
+# Restore: Packages
+# ─────────────────────────────────────────
+restore_packages() {
     echo ""
     info "Installing packages..."
 
@@ -208,7 +215,45 @@ restore_public() {
     fi
 
     echo ""
-    success "Public restore complete."
+    success "Package restore complete."
+}
+
+# ─────────────────────────────────────────
+# Restore: Services
+# ─────────────────────────────────────────
+restore_services() {
+    echo ""
+    info "Enabling services..."
+
+    SYSTEM_SERVICES="$SCRIPT_DIR/services/system.txt"
+    USER_SERVICES="$SCRIPT_DIR/services/user.txt"
+
+    if [[ -f "$SYSTEM_SERVICES" ]]; then
+        info "Enabling system services..."
+        while IFS= read -r service; do
+            [[ -z "$service" ]] && continue
+            info "  enabling: $service"
+            sudo systemctl enable "$service"
+            success "  Done: $service"
+        done < "$SYSTEM_SERVICES"
+    else
+        warn "System services list not found: $SYSTEM_SERVICES"
+    fi
+
+    if [[ -f "$USER_SERVICES" ]]; then
+        info "Enabling user services..."
+        while IFS= read -r service; do
+            [[ -z "$service" ]] && continue
+            info "  enabling: $service"
+            systemctl --user enable "$service"
+            success "  Done: $service"
+        done < "$USER_SERVICES"
+    else
+        warn "User services list not found: $USER_SERVICES"
+    fi
+
+    echo ""
+    success "Services restore complete."
 }
 
 # ─────────────────────────────────────────
@@ -216,16 +261,22 @@ restore_public() {
 # ─────────────────────────────────────────
 echo ""
 echo "What do you want to restore?"
-echo "  1) Public files  ← dotfiles repo"
+echo "  1) Public files without packages and services ← dotfiles repo (GitHub)"
 echo "  2) Private files ← USB drive"
-echo "  3) Both"
+echo "  3) Packages ← dotfiles repo (GitHub)"
+echo "  4) Services ← dotfiles repo (GitHub)"
+echo "  5) All"
 echo ""
-read -rp "Choose [1/2/3]: " CHOICE
+read -rp "Choose [1/2/3/4/5]: " CHOICE
 
 case "$CHOICE" in
     1) restore_public ;;
     2) restore_private ;;
-    3) restore_public
-       restore_private ;;
+    3) restore_packages ;;
+    4) restore_services ;;
+    5) restore_public
+       restore_private
+       restore_packages
+       restore_services ;;
     *) error "Invalid choice '$CHOICE'."; exit 1 ;;
 esac
