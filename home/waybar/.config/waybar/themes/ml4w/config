@@ -10,7 +10,7 @@
 //
 
 [
-//laptop screen 
+//laptop display main bar 
 {
     // General Settings
     "layer": "top",
@@ -20,8 +20,9 @@
     "margin-left": 14,
     "margin-right": 14,    
     "spacing": 0,
+    "output" : [],
     //"output": ["eDP-1", "eDP-2"],
-    "output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
+    //"output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
 
     // Load Modules
     "include": [
@@ -67,7 +68,46 @@
     ]
 },
 
-//external screens
+//external display main bar
+{
+    // General Settings
+    "layer": "top",
+    "position": "bottom",
+    "margin-top": 0,
+    "margin-bottom": 8,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+    //"output" : [],
+    //"output": ["eDP-1", "eDP-2"],
+    "output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
+
+    // Load Modules
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    // Modules Left
+    "modules-left": [
+        "pulseaudio",
+        "backlight",
+        "battery"
+    ],
+
+    // Modules Center
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    // Modules Right    
+    "modules-right": [
+        "cpu",
+        "tray",
+        "clock"
+    ]
+},
+//workspace, applications
 {
     // General Settings
     "layer": "top",
@@ -77,8 +117,9 @@
     "margin-left": 14,
     "margin-right": 14,    
     "spacing": 0,
+    //"output": [],
     //"output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
-    "output": ["eDP-1", "eDP-2"],
+    //"output": ["eDP-1", "eDP-2"],
 
     // Load Modules
     "include": [

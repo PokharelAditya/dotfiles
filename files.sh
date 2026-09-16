@@ -8,6 +8,7 @@ PRIVATE_HOME_FILES=(
     ".config/sunshine"
     ".config/kdeconnect"
     ".config/YouTube Music/config.json"
+    ".config/ytm-player"
     ".zsh_history"
 )
 
@@ -20,6 +21,7 @@ PRIVATE_SYSTEM_FILES=(
 # Each entry: "<src-relative-to-HOME> <dest-folder-in-dotfiles/home>"
 # ─────────────────────────────────────────
 PUBLIC_HOME_FILES=(
+    ".config/btop                             btop"
     ".config/discover_overlay/config.ini      discord"
     ".config/gtk-3.0/settings.ini             gtk"
     ".config/gtk-4.0/settings.ini             gtk"
@@ -44,7 +46,9 @@ PUBLIC_HOME_FILES=(
 PUBLIC_SYSTEM_FILES=(
     "/etc/default/grub"
     "/boot/grub/themes"
+    "/usr/share/plymouth/themes/proxzima"
     "/etc/sddm.conf"
-    "/usr/share/sddm"
+    "/usr/share/sddm/themes/silent"
+    "/usr/share/sddm/faces"
     "/etc/pacman.conf"
 )
