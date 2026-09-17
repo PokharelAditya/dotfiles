@@ -1,0 +1,118 @@
+# Hyprland Named Sessions — TODO
+
+Build a lightweight named-session system for Hyprland, similar to Neovim/tmux sessions.
+
+## Goal
+
+Keep multiple independent sets of workspaces **1–10**:
+
+* `academics`
+* `ricing`
+* `gaming`
+* etc.
+
+Normal keybindings (`Super+1` through `Super+0`) continue to work unchanged.
+
+## Basic idea
+
+When switching sessions:
+
+```text
+Current session WS 1–10
+        ↓
+special:session-<name>-1 ... -10
+        ↓
+Normal WS 1–10 become available
+        ↓
+Restore another session's special workspaces
+        ↓
+That session becomes normal WS 1–10
+```
+
+Example:
+
+```text
+Ricing:
+  1 → Neovim
+  2 → Kitty
+  3 → Brave
+
+Academics:
+  1 → Neovim
+  2 → PDF
+  3 → Browser
+```
+
+Shared applications such as Discord should remain on their existing independent special workspaces:
+
+```text
+special:discord
+special:spotify
+...
+```
+
+They should not belong to a named session.
+
+## Implementation plan
+
+Start simple with:
+
+```text
+~/.config/hypr/scripts/hypr-session
+```
+
+Prototype commands:
+
+```bash
+hypr-session save <name>
+hypr-session switch <name>
+hypr-session restore <name>
+hypr-session list
+```
+
+Use `hyprctl` + JSON (`jq`) initially.
+
+First test only:
+
+```text
+WS 1–10
+  ↓
+special:session-test-1–10
+  ↓
+WS 1–10 empty
+  ↓
+restore
+  ↓
+WS 1–10 restored
+```
+
+Do NOT build the complete system yet.
+
+## Future: persistence across reboot
+
+Live special-workspace sessions solve switching while Hyprland is running.
+
+For reboot persistence, investigate existing projects such as:
+
+* hyprflow
+* hypr-session
+* hyprland-session-manager
+* hyprresume
+
+Potentially use one of these for application/window restoration while keeping the custom named-session switching layer separate.
+
+## Possible future evolution
+
+If the script becomes sufficiently useful:
+
+```text
+Bash + hyprctl
+      ↓
+Hyprland Lua
+      ↓
+standalone hypr-session project
+      ↓
+possibly a native Hyprland C++ plugin
+```
+
+Don't start with a plugin. First prove the workspace-moving concept with a small script.

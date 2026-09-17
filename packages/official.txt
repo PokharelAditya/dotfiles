@@ -58,6 +58,7 @@ less 1:704-1
 linux 7.2.4.arch1-2
 linux-firmware 20260910-1
 linux-headers 7.2.4.arch1-2
+matugen 4.2.0-1
 mono 6.12.0.206-1
 mpc 0.35-2
 mpd 0.24.15-2
@@ -151,7 +152,6 @@ ttf-liberation 2.1.5-2
 ttf-nerd-fonts-symbols 3.5.1-1
 ufw 0.36.2-7
 unzip 6.0-23
-uv 0.12.13-1
 uwsm 0.26.7-1
 v4l2loopback-dkms 0.15.4-2
 valgrind 3.25.1-9

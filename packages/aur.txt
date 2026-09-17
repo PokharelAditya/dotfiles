@@ -1,6 +1,7 @@
 antigravity-cli 1.2.2_6061403484848128-1
 bibata-cursor-theme-bin 2.0.7-1
 brave-bin 1:1.95.101-1
+caelestia-shell 2.4.0-1
 digital-logic-sim-bin v2.1.6-1
 discover-overlay 0.7.8-1
 downgrade 12.0.2-1

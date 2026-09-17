@@ -28,6 +28,7 @@ PUBLIC_HOME_FILES=(
     ".config/hypr                             hypr"
     ".config/i3                               i3"
     ".config/kitty                            kitty"
+    ".config/matugen                          matugen"
     ".config/nvim                             nvim"
     ".config/qt5ct                            qt"
     ".config/qt6ct                            qt"
