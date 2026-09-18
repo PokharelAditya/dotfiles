@@ -26,7 +26,7 @@ PUBLIC_HOME_FILES=(
     ".gtkrc-2.0                               gtk"
     ".config/gtk-3.0                          gtk"
     ".config/gtk-4.0                          gtk"
-    "~/.config/xsettingsd                     gtk"
+    ".config/xsettingsd                       gtk"
     ".config/hypr                             hypr"
     ".config/i3                               i3"
     ".config/kitty                            kitty"
