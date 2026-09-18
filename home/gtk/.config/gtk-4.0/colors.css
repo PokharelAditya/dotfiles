@@ -3,20 +3,57 @@
 * Generated with Matugen
 */
 
+/* Accent colors (buttons, switches, selections) */
 @define-color accent_color #76d7c7;
-@define-color accent_fg_color #00201c;
+@define-color accent_fg_color #003731;
 @define-color accent_bg_color #76d7c7;
-@define-color window_bg_color #171119;
+
+/* Window backgrounds (main app window) */
+@define-color window_bg_color #1f1a21;
 @define-color window_fg_color #ebdfea;
-@define-color headerbar_bg_color #171119;
+
+/* Headerbar (title bar) - slightly elevated */
+@define-color headerbar_bg_color #231e25;
 @define-color headerbar_fg_color #ebdfea;
-@define-color popover_bg_color #171119;
+@define-color headerbar_backdrop_color #1f1a21;
+@define-color headerbar_border_color #2e2830;
+
+/* Popovers and menus - elevated above window */
+@define-color popover_bg_color #2e2830;
 @define-color popover_fg_color #ebdfea;
-@define-color view_bg_color #171119;
+
+/* View backgrounds (text areas, file lists) - deepest */
+@define-color view_bg_color #120c13;
 @define-color view_fg_color #ebdfea;
-@define-color card_bg_color #171119;
+
+/* Cards - slightly elevated from window */
+@define-color card_bg_color #231e25;
 @define-color card_fg_color #ebdfea;
-@define-color sidebar_bg_color @window_bg_color;
-@define-color sidebar_fg_color @window_fg_color;
-@define-color sidebar_border_color @window_bg_color;
-@define-color sidebar_backdrop_color @window_bg_color;
+
+/* Sidebars */
+@define-color sidebar_bg_color #120c13;
+@define-color sidebar_fg_color #d1c2d2;
+@define-color sidebar_border_color #2e2830;
+@define-color sidebar_backdrop_color #120c13;
+
+/* Destructive actions */
+@define-color destructive_color #ffb4ab;
+@define-color destructive_fg_color #690005;
+@define-color destructive_bg_color #ffb4ab;
+
+/* Success color */
+@define-color success_color #e4b8ea;
+@define-color success_fg_color #44244c;
+@define-color success_bg_color #e4b8ea;
+
+/* Warning color */
+@define-color warning_color #ebb9d0;
+@define-color warning_fg_color #472538;
+@define-color warning_bg_color #ebb9d0;
+
+/* Borders and separators */
+@define-color borders #4e4351;
+
+/* Selected items (in lists, etc) */
+@define-color theme_selected_bg_color #005047;
+@define-color theme_selected_fg_color #92f4e3;

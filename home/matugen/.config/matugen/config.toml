@@ -22,4 +22,4 @@ post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme ""; gsettings s
 [templates.gtk4]
 input_path = './templates/gtk.css'
 output_path = '~/.config/gtk-4.0/colors.css'
-post_hook = '~/.config/matugen/post-hook-scripts/gtk-themes-reload.sh'
+post_hook = './post-hook-scripts/gtk-themes-reload.sh'
