@@ -23,8 +23,10 @@ PRIVATE_SYSTEM_FILES=(
 PUBLIC_HOME_FILES=(
     ".config/btop                             btop"
     ".config/discover_overlay/config.ini      discord"
-    ".config/gtk-3.0/settings.ini             gtk"
-    ".config/gtk-4.0/settings.ini             gtk"
+    ".gtkrc-2.0                               gtk"
+    ".config/gtk-3.0                          gtk"
+    ".config/gtk-4.0                          gtk"
+    "~/.config/xsettingsd                     gtk"
     ".config/hypr                             hypr"
     ".config/i3                               i3"
     ".config/kitty                            kitty"

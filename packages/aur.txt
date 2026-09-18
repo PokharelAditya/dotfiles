@@ -16,7 +16,6 @@ qt6ct-kde 0.11-8
 sbctl-dracut-conf 0.0.7-1
 sddm-silent-theme 1.5.0-1
 snapd 2.77.1-1
-supergfxctl 5.2.7-2
 xorgxrdp 0.10.5-1
 xrdp 0.10.6.1-1
 yay 13.0.1-1

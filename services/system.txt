@@ -5,9 +5,10 @@ getty@.service
 NetworkManager-dispatcher.service
 NetworkManager-wait-online.service
 NetworkManager.service
+nvidia-hibernate.service
+nvidia-resume.service
+nvidia-suspend.service
 sddm.service
 seatd.service
 snapd.apparmor.service
-supergfxd.service
 systemd-timesyncd.service
-tlp.service
