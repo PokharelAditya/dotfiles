@@ -6,10 +6,20 @@ reload_apps_on_scheme_change = false
 
 # Templates to generate
 [templates.hyprland]
-input_path = "~/.config/matugen/templates/hyprland.conf"
+input_path = "./templates/hyprland.conf"
 output_path = "~/.config/hypr/colors.conf"
 
 [templates.kitty]
-input_path = "~/.config/matugen/templates/kitty.conf"
+input_path = "./templates/kitty.conf"
 output_path = '~/.config/kitty/themes/Matugen.conf'
 post_hook = "kitty +kitten themes --reload-in=all Matugen"
+
+[templates.gtk3]
+input_path = './templates/gtk.css'
+output_path = '~/.config/gtk-3.0/colors.css'
+post_hook = 'gsettings set org.gnome.desktop.interface gtk-theme ""; gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-{{mode}}'
+
+[templates.gtk4]
+input_path = './templates/gtk.css'
+output_path = '~/.config/gtk-4.0/colors.css'
+post_hook = '~/.config/matugen/post-hook-scripts/gtk-themes-reload.sh'
