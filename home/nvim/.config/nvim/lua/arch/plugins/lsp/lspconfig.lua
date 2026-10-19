@@ -141,9 +141,16 @@ return {
 						capabilities = capabilities,
 						settings = {
 							Lua = {
+								runtime = {
+									version = "LuaJIT",
+								},
 								-- make the language server recognize "vim" global
 								diagnostics = {
 									globals = { "vim", "require" },
+								},
+								workspace = {
+									checkThirdParty = false,
+									library = vim.api.nvim_get_runtime_file("", true),
 								},
 								completion = {
 									callSnippet = "Replace",

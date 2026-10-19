@@ -80,7 +80,7 @@
     "spacing": 0,
     //"output" : [],
     //"output": ["eDP-1", "eDP-2"],
-    "output": ["HDMI-A-1", "huaweiTab", "Virtual-1"],
+    "output": ["huaweiTab"],
 
     // Load Modules
     "include": [

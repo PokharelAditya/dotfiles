@@ -1,6 +1,8 @@
 accounts-daemon.service
 acpid.service
+asus-shutdown.service
 bluetooth.service
+cardwired.service
 getty@.service
 NetworkManager-dispatcher.service
 NetworkManager-wait-online.service
