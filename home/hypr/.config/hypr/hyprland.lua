@@ -1,100 +1,50 @@
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
--- HYPRLAND CONFIG.                                       --
--- Converted from hyprland.conf to Lua syntax.            --
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
--- Refer to the wiki for more information.
--- https://wiki.hypr.land/Configuring/
+------------------
+---- HYPRLAND ----
+------------------
 
 
 ------------------
 ---- MONITORS ----
 ------------------
 
--- See https://wiki.hypr.land/Configuring/Basics/Monitors/
-
 require("monitors")
--- hl.monitor({
---     output   = "eDP-1",
---     mode     = "1920x1080@144.0",
---     position = "0x0",
---     scale    = 1.0,
---     bitdepth = 10,
--- })
--- hl.monitor({
---     output   = "eDP-2",
---     mode     = "1920x1080@144.0",
---     position = "0x0",
---     scale    = 1.0,
---     bitdepth = 10,
--- })
--- hl.monitor({
---     output   = "huaweiTab",
---     mode     = "1280x800@60",
---     position = "-800x0",
---     scale    = 1.0,
---     transform = 1,
--- })
--- hl.monitor({
---     output   = "huaweiTab",
---     mode     = "1280x800@60",
---     position = "1920x1024",
---     scale    = 1.0,
--- })
--- hl.monitor({
---     output   = "huaweiTab",
---     mode     = "1280x800@60",
---     position = "-1280x0",
---     scale    = 1.0,
--- })
--- hl.monitor({ output = "Virtual-1", mode = "1280x800@60", position = "-1280x0", scale = 1.0, bitdepth = 10 })
--- hl.monitor({ output = "Virtual-1", mode = "disable" })
--- hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60", position = "1920x0", scale = 1.0, bitdepth = 10 })
--- hl.monitor({ output = "HDMI-A-1", mode = "1280x1024@75.03", position = "3840x0", scale = 1.0 })
--- hl.monitor({
---     output   = "HDMI-A-1",
---     mode     = "1280x1024@75",
---     position = "1920x0",
---     scale    = 1.0,
--- })
--- hl.monitor({ output = "HDMI-A-1", mode = "1440x900@74.98", position = "3840x0", scale = 1.0, bitdepth = 10 })
--- hl.monitor({ output = "huaweiPhone", mode = "720x1280@30", position = "1560x0", scale = 2.0 })
--- hl.monitor({ output = "huaweiTab", mode = "1280x800@30", position = "640x0", scale = 1.0 })   -- horizontal resolution
--- hl.monitor({ output = "huaweiTab", mode = "800x1280@30", position = "1120x0", scale = 1.0 })   -- vertical resolution
+require("conf.eDP")
 
-
----------------------
----- MY PROGRAMS ----
----------------------
-
--- See https://wiki.hypr.land/Configuring/Basics/Variables/
-local terminal    = "kitty"
-local fileManager = "thunar"
-local menu        = "rofi -show drun"
-local browser     = "brave"
+require("workspaces")
 
 
 -------------------
 ---- AUTOSTART ----
 -------------------
 
--- Autostart necessary processes (like notifications daemons, status bars, etc.)
--- Or execute your favorite apps at launch like this:
+hl.on("hyprland.start", function()
 
--- hl.on("hyprland.start", function()
---   hl.exec_cmd(terminal)
---   hl.exec_cmd("nm-applet")
---   hl.exec_cmd("waybar & hyprpaper & firefox")
--- end)
--- hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'")
--- hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
+    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config &")
+    hl.exec_cmd("sleep 2 && rog-control-center &")
+    -- hl.exec_cmd("sleep 2 && discover-overlay &")
+    hl.exec_cmd("sleep 2 && xhost +SI:localuser:root &")
+    hl.exec_cmd("sleep 2 && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &")
+    hl.exec_cmd("sleep 2 && tailscale systray &")
+    hl.exec_cmd("sleep 2 && kdeconnectd & kdeconnect-indicator &")
+
+    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery/refresh-rate.sh &")
+    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
+end)
+
+
+---------------------
+---- MY PROGRAMS ----
+---------------------
+
+local terminal    = "kitty"
+local fileManager = "thunar"
+local menu        = "rofi -show drun"
+local browser     = "brave"
 
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
-
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
 hl.env("XCURSOR_SIZE", "24")
 -- hl.env("HYPRCURSOR_SIZE", "24")
@@ -475,19 +425,3 @@ hl.window_rule({
 })
 
 
--------------------
----- AUTOSTART ----
--------------------
-
-hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config &")
-    hl.exec_cmd("sleep 2 && rog-control-center &")
-    -- hl.exec_cmd("sleep 2 && discover-overlay &")
-    hl.exec_cmd("sleep 2 && xhost +SI:localuser:root &")
-    hl.exec_cmd("sleep 2 && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &")
-    hl.exec_cmd("sleep 2 && tailscale systray &")
-    hl.exec_cmd("sleep 2 && kdeconnectd & kdeconnect-indicator &")
-    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
-    -- hl.exec_cmd('mpvpaper -o "no-audio loop-file=inf panscan=1.0 hwdec=auto input-ipc-server=/tmp/mpv-socket" all wallpapers/Videos/GTR-Silver.mp4')
-    -- hl.exec_cmd('mpvpaper -o "no-audio loop-file=inf panscan=1.0 hwdec=auto input-ipc-server=/tmp/mpv-socket" eDP-2 wallpapers/Videos/GTR-Silver.mp4')
-end)
