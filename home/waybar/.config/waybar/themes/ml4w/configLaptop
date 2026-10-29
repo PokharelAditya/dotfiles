@@ -1,0 +1,42 @@
+[
+{
+    "layer": "top",
+    "position": "top",
+    "margin-top": 8,
+    "margin-bottom": 0,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+    "output": ["eDP-1", "eDP-2"],
+
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    "modules-left": [
+        "custom/arch_logo",
+        "hyprland/workspaces",
+        "custom/updates",
+        "wlr/taskbar",
+        "hyprland/window"
+    ],
+
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    "modules-right": [
+        "pulseaudio",
+        "backlight",
+        "bluetooth",
+        "battery",
+        "cpu",
+        "power-profiles-daemon",
+        "tray",
+        "custom/notification",
+        "custom/hypridle",
+        "clock"
+    ]
+},
+]

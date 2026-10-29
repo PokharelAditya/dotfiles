@@ -1,0 +1,60 @@
+[
+{
+    "layer": "top",
+    "position": "bottom",
+    "margin-top": 0,
+    "margin-bottom": 8,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+    "output": ["huaweiTab"],
+
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    "modules-left": [
+        "pulseaudio",
+        "backlight",
+        "battery"
+    ],
+
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    "modules-right": [
+        "cpu",
+        "tray",
+        "clock"
+    ]
+},
+{
+    "layer": "top",
+    "position": "top",
+    "margin-top": 8,
+    "margin-bottom": 0,
+    "margin-left": 14,
+    "margin-right": 14,    
+    "spacing": 0,
+
+    "include": [
+        "~/.config/ml4w/settings/waybar-quicklinks.json",
+        "~/.config/waybar/modules.json"
+    ],
+    
+    "modules-left": [
+        "hyprland/workspaces",
+        "wlr/taskbar",
+    ],
+
+    "modules-center": [ 
+        "custom/empty"
+    ],
+
+    "modules-right": [
+        "hyprland/window"
+    ]
+},
+]

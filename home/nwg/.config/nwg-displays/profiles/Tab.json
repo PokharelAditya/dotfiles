@@ -1,0 +1,55 @@
+{
+  "displays": [
+    {
+      "name": "eDP-1",
+      "description": "Najing CEC Panda FPD Technology CO. ltd 0x004D",
+      "x": 3800,
+      "y": 1200,
+      "physical_width": 1920,
+      "physical_height": 1080,
+      "transform": "normal",
+      "scale": 1.0,
+      "scale_filter": null,
+      "refresh": 144.0,
+      "dpms": true,
+      "adaptive_sync": false,
+      "custom_mode": false,
+      "mirror": "",
+      "ten_bit": true,
+      "color_mode": "",
+      "sdr_brightness": 1.0,
+      "sdr_saturation": 1.0,
+      "active": true
+    },
+    {
+      "name": "huaweiTab",
+      "description": "",
+      "x": 2520,
+      "y": 1200,
+      "physical_width": 1280,
+      "physical_height": 800,
+      "transform": "normal",
+      "scale": 0.9999999999999992,
+      "scale_filter": null,
+      "refresh": 60.0,
+      "dpms": true,
+      "adaptive_sync": false,
+      "custom_mode": false,
+      "mirror": "",
+      "ten_bit": true,
+      "color_mode": "",
+      "sdr_brightness": 1.0,
+      "sdr_saturation": 1.0,
+      "active": true
+    }
+  ],
+  "config": {
+    "view-scale": 0.2,
+    "snap-threshold": 10,
+    "indicator-timeout": 500,
+    "custom-mode": [],
+    "use-desc": false,
+    "confirm-timeout": 10,
+    "profile-bound-wallpapers": false
+  }
+}

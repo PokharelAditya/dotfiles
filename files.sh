@@ -32,6 +32,7 @@ PUBLIC_HOME_FILES=(
     ".config/kitty                            kitty"
     ".config/matugen                          matugen"
     ".config/nvim                             nvim"
+    ".config/nwg-displays                     nwg"
     ".config/qt5ct                            qt"
     ".config/qt6ct                            qt"
     ".config/rog                              rog"

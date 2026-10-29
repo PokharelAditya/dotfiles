@@ -11,11 +11,20 @@ while true; do
     if [[ -n "$AC" && "$AC" != "$LAST" ]]; then
         if [[ "$AC" == "0" ]]; then
             RATE=60
+            BRIGHTNESS=50
+            BACKLIT="low"
+            WALLPAPER="pause"
         else
             RATE=144
+            BRIGHTNESS=100
+            BACKLIT="high"
+            WALLPAPER="resume"
         fi
 
         sed -i -E "s/^(local refreshRate = )[0-9.]+/\1${RATE}/" "$FILE"
+        brightnessctl set "${BRIGHTNESS}%"
+        asusctl leds set "${BACKLIT}"
+        skwd-helm "${WALLPAPER}"
         LAST="$AC"
     fi
 

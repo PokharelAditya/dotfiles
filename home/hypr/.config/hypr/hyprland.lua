@@ -18,17 +18,19 @@ require("workspaces")
 -------------------
 
 hl.on("hyprland.start", function()
-
-    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config &")
-    hl.exec_cmd("sleep 2 && rog-control-center &")
-    -- hl.exec_cmd("sleep 2 && discover-overlay &")
     hl.exec_cmd("sleep 2 && xhost +SI:localuser:root &")
     hl.exec_cmd("sleep 2 && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &")
-    hl.exec_cmd("sleep 2 && tailscale systray &")
-    hl.exec_cmd("sleep 2 && kdeconnectd & kdeconnect-indicator &")
 
-    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery/refresh-rate.sh &")
-    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
+    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop &")
+    hl.exec_cmd("sleep 2 && kdeconnectd & kdeconnect-indicator &")
+    -- hl.exec_cmd("sleep 2 && rog-control-center &")
+    -- hl.exec_cmd("sleep 2 && cardwire-gui &")
+    -- hl.exec_cmd("sleep 2 && discover-overlay &")
+    -- hl.exec_cmd("sleep 2 && tailscale systray &")
+
+    hl.exec_cmd("sleep 5 && /home/adityaarch/.config/hypr/scripts/battery/ac-battery-switch.sh &")
+    hl.exec_cmd("sleep 5 && /home/adityaarch/.config/hypr/scripts/gpu/backlit.sh &")
+    -- hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
 end)
 
 
@@ -290,8 +292,9 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + CTRL + H", hl.dsp.exec_cmd("~/.config/hypr/scripts/exit-hyprland.sh"))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd('hyprctl reload && notify-send "Hyprland" "Hyprland reloaded"'))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config & notify-send "Waybar" "Waybar enabled")'))
-hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd('killall waybar && (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config) & notify-send "Waybar" "Waybar reloaded"'))
+hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop & notify-send "Waybar" "Waybar enabled")'))
+hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configExternal & notify-send "Waybar" "Waybar enabled")'))
+-- hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd('killall waybar && (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config) & notify-send "Waybar" "Waybar reloaded"'))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
