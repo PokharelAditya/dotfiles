@@ -1,7 +1,7 @@
 {
   "displays": [
     {
-      "name": "eDP-1",
+      "name": "eDP-2",
       "description": "Najing CEC Panda FPD Technology CO. ltd 0x004D",
       "x": 3800,
       "y": 1200,
@@ -19,6 +19,35 @@
       "color_mode": "",
       "sdr_brightness": 1.0,
       "sdr_saturation": 1.0,
+      "primary": false,
+      "hdr_min_lum": 0.0,
+      "hdr_max_lum": 0.0,
+      "hdr_max_avg_lum": 0.0,
+      "active": true
+    },
+    {
+      "name": "lenovoMonitor",
+      "description": "",
+      "x": 5740,
+      "y": 0,
+      "physical_width": 1280,
+      "physical_height": 1024,
+      "transform": "normal",
+      "scale": 1.0,
+      "scale_filter": null,
+      "refresh": 75.0,
+      "dpms": true,
+      "adaptive_sync": false,
+      "custom_mode": false,
+      "mirror": "",
+      "ten_bit": true,
+      "color_mode": "",
+      "sdr_brightness": 1.0,
+      "sdr_saturation": 1.0,
+      "primary": false,
+      "hdr_min_lum": 0.0,
+      "hdr_max_lum": 0.0,
+      "hdr_max_avg_lum": 0.0,
       "active": true
     },
     {
@@ -40,6 +69,10 @@
       "color_mode": "",
       "sdr_brightness": 1.0,
       "sdr_saturation": 1.0,
+      "primary": false,
+      "hdr_min_lum": 0.0,
+      "hdr_max_lum": 0.0,
+      "hdr_max_avg_lum": 0.0,
       "active": true
     }
   ],

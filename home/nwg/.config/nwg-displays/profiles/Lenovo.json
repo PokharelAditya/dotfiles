@@ -1,7 +1,7 @@
 {
   "displays": [
     {
-      "name": "eDP-1",
+      "name": "eDP-2",
       "description": "Najing CEC Panda FPD Technology CO. ltd 0x004D",
       "x": 3800,
       "y": 1200,
@@ -33,7 +33,7 @@
       "physical_width": 1280,
       "physical_height": 1024,
       "transform": "normal",
-      "scale": 1,
+      "scale": 1.0,
       "scale_filter": null,
       "refresh": 75.0,
       "dpms": true,
@@ -58,7 +58,7 @@
       "physical_width": 1280,
       "physical_height": 800,
       "transform": "normal",
-      "scale": 1,
+      "scale": 1.0,
       "scale_filter": null,
       "refresh": 60.0,
       "dpms": true,

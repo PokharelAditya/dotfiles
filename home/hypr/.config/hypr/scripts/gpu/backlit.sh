@@ -31,8 +31,8 @@ while true; do
   fi
 
   if [[ "$MODE" == "Integrated" ]]; then
-    sleep 5
+    sleep 10
   else
-    sleep 1
+    sleep 2
   fi
 done

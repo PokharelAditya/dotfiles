@@ -1,6 +1,12 @@
-------------------
 ---- HYPRLAND ----
-------------------
+
+local function debug(data)
+    local file = io.open("/tmp/hyprland-debug.log", "a")
+    if file then
+        file:write(tostring(data) .. "\n")
+        file:close()
+    end
+end
 
 
 ------------------
@@ -18,18 +24,19 @@ require("workspaces")
 -------------------
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("sleep 2 && xhost +SI:localuser:root &")
-    hl.exec_cmd("sleep 2 && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &")
+    hl.exec_cmd("xhost +SI:localuser:root")
+    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
 
-    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop &")
-    hl.exec_cmd("sleep 2 && kdeconnectd & kdeconnect-indicator &")
+    hl.exec_cmd("systemctl --user restart skwd-walld.service")
+    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop")
+    hl.exec_cmd("kdeconnect-indicator")
     -- hl.exec_cmd("sleep 2 && rog-control-center &")
     -- hl.exec_cmd("sleep 2 && cardwire-gui &")
     -- hl.exec_cmd("sleep 2 && discover-overlay &")
     -- hl.exec_cmd("sleep 2 && tailscale systray &")
 
-    hl.exec_cmd("sleep 5 && /home/adityaarch/.config/hypr/scripts/battery/ac-battery-switch.sh &")
-    hl.exec_cmd("sleep 5 && /home/adityaarch/.config/hypr/scripts/gpu/backlit.sh &")
+    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery/ac-battery-switch.sh")
+    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/gpu/backlit.sh")
     -- hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
 end)
 
@@ -42,7 +49,7 @@ local terminal    = "kitty"
 local fileManager = "thunar"
 local menu        = "rofi -show drun"
 local browser     = "brave"
-
+local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
@@ -121,7 +128,8 @@ hl.config({
     },
 
     layout = {
-        single_window_aspect_ratio = "4 3",
+        single_window_aspect_ratio = {7,5},
+        single_window_aspect_ratio_tolerance = 0.12
     },
 
     decoration = {
@@ -233,8 +241,9 @@ hl.config({
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-hl.gesture({ fingers = 3, direction = "vertical",   action = "special",  workspace = "musicWorkspace" })
-hl.gesture({ fingers = 4, direction = "vertical",   action = "special",  workspace = "discordWorkspace" })
+hl.gesture({ fingers = 3, direction = "vertical",   action = "special",  workspace_name = "musicWorkspace" })
+hl.gesture({ fingers = 4, direction = "vertical",   action = "special",  workspace_name = "discordWorkspace" })
+
 
 -- Example per-device config
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices/ for more
@@ -267,26 +276,75 @@ hl.device({
     natural_scroll = true,
 })
 
-
 --------------------------
 ---- WORKSPACE RULES  ----
 --------------------------
 
-hl.workspace_rule({
-    workspace       = "special:musicWorkspace",
-    on_created_empty = 'if hyprctl clients | grep "com.github.th_ch.youtube_music"; then hyprctl dispatch closewindow class:com.github.th_ch.youtube_music; else pear-desktop; fi',
-})
-hl.workspace_rule({
-    workspace       = "special:discordWorkspace",
-    on_created_empty = 'if hyprctl clients | grep "class: discord"; then hyprctl dispatch closewindow class:discord; else discord; fi',
-})
+local specialWorkspaces = {
+  ["btop"] = {
+    app = "kitty btop",
+    monitor = "lenovoMonitor",
+    key = "Escape",
+    full = 1
+  },
+  ["yt-music"] = {
+    app = "pear-desktop",
+    monitor = "huaweiTab",
+    key = "Y",
+    full = 2
+  },
+  ["discord"] = {
+    app = "discord",
+    monitor = "lenovoMonitor",
+    key = "D",
+    full = 1
+  }
+}
+
+hl.on("workspace.created", function(ws)
+  local short = ws.name:match("^special:(.-)Workspace$")
+	local pro = specialWorkspaces[short]
+	if pro and ws.is_empty then
+		hl.exec_cmd(pro.app)
+	end
+end)
+
+for name,pro in pairs(specialWorkspaces) do
+	hl.window_rule({
+		name = "fs-" .. name,
+		match = { workspace = "special:" .. name .. "Workspace" },
+		fullscreen_state = pro.full,
+	})
+
+  hl.bind(mainMod .. " + " .. pro.key, function()
+      local ws   = name .. "Workspace"
+      local full = "special:" .. ws
+
+      local visible = false
+      for _, m in ipairs(hl.get_monitors()) do
+          local sp = m.active_special_workspace
+          if sp and sp.name == full then visible = true end
+      end
+
+      local w = hl.get_active_window()
+      local focused = w ~= nil and w.workspace ~= nil and w.workspace.name == full
+
+      if visible and focused then
+          hl.dispatch(hl.dsp.workspace.toggle_special(ws))
+      elseif visible then
+          hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
+      else
+          hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
+          hl.dispatch(hl.dsp.workspace.toggle_special(ws))
+      end
+  end)
+end
 
 
 ---------------------
 ---- KEYBINDINGS ----
 ---------------------
 
-local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
 hl.bind(mainMod .. " + CTRL + H", hl.dsp.exec_cmd("~/.config/hypr/scripts/exit-hyprland.sh"))
@@ -299,54 +357,55 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("notion-desktop"))
+-- hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("notion-desktop"))
 -- hl.bind(mainMod .. " + D", hl.dsp.exec_cmd('if hyprctl clients | grep "class: discord"; then hyprctl dispatch closewindow class:discord; else discord; fi'))
-hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special("discordWorkspace"))
+-- hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special("discordWorkspace"))
 hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("discover-overlay -x || discover-overlay"))
 -- hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('if hyprctl clients | grep "com.github.th_ch.youtube_music"; then hyprctl dispatch closewindow class:com.github.th_ch.youtube_music; else pear-desktop; fi'))
-hl.bind(mainMod .. " + Y", hl.dsp.workspace.toggle_special("musicWorkspace"))
-hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = 1 }))
-hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = 0 }))
+-- hl.bind(mainMod .. " + Z", hl.dsp.focus({ workspace = "M"}))
+-- hl.bind(mainMod .. " + Y", hl.dsp.workspace.toggle_special("musicWorkspace"))
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 1, client = 0 }))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 2, client = 0 }))
 hl.bind(mainMod .. " + ALT + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("systemctl suspend-then-hibernate"))
 -- hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- dwindle
--- hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
+hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
 
 
 -- For controlling androids
-hl.workspace_rule({
-    workspace       = "special:scrcpyWorkspace",
-    on_created_empty = 'scrcpy --otg --shortcut-mod=lsuper --window-title="specialScrcpy"',
-})
-
--- hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
--- hl.bind(mainMod .. " + S", hl.dsp.sendshortcut("ALT_R", "Return"))
-hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("hyprctl dispatch togglespecialworkspace scrcpyWorkspace"))
-hl.bind(mainMod .. " + S", hl.dsp.submap("scrcpyMode"))
-
-hl.define_submap("scrcpyMode", function()
-    hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
-    hl.bind(mainMod .. " + S", hl.dsp.submap("reset"))
-    hl.bind(mainMod .. " + Escape", hl.dsp.submap("reset"))
-
-    hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-    hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
-    hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
-    hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
-    hl.bind("XF86RFKill",           hl.dsp.exec_cmd('notify-send "hi" "hello"'),                        { locked = true, repeating = true })
-
-    hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
-    hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-    hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-    hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
-end)
-
-hl.window_rule({
-    name  = "scrcpy-transparent",
-    match = { title = "specialScrcpy" },
-    opacity  = 0,
-    no_blur  = true,
-})
+-- hl.workspace_rule({
+--     workspace       = "special:scrcpyWorkspace",
+--     on_created_empty = 'scrcpy --otg --shortcut-mod=lsuper --window-title="specialScrcpy"',
+-- })
+--
+-- -- hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
+-- -- hl.bind(mainMod .. " + S", hl.dsp.sendshortcut("ALT_R", "Return"))
+-- hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("hyprctl dispatch togglespecialworkspace scrcpyWorkspace"))
+-- hl.bind(mainMod .. " + S", hl.dsp.submap("scrcpyMode"))
+--
+-- hl.define_submap("scrcpyMode", function()
+--     hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
+--     hl.bind(mainMod .. " + S", hl.dsp.submap("reset"))
+--     hl.bind(mainMod .. " + Escape", hl.dsp.submap("reset"))
+--
+--     hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
+--     hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
+--     hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
+--     hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
+--     hl.bind("XF86RFKill",           hl.dsp.exec_cmd('notify-send "hi" "hello"'),                        { locked = true, repeating = true })
+--
+--     hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
+--     hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+--     hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+--     hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+-- end)
+--
+-- hl.window_rule({
+--     name  = "scrcpy-transparent",
+--     match = { title = "specialScrcpy" },
+--     opacity  = 0,
+--     no_blur  = true,
+-- })
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
