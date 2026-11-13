@@ -49,8 +49,11 @@ local terminal    = "kitty"
 local fileManager = "thunar"
 local menu        = "rofi -show drun"
 local browser     = "brave"
-local mainMod = "SUPER" -- Sets "Windows" key as main modifier
-local subMod = "ALT" -- Sets "Windows" key as main modifier
+
+MOD = "SUPER + "
+ALT = "ALT + "
+SH = "SHIFT + "
+CTRL = "CTRL + "
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
@@ -242,10 +245,10 @@ hl.config({
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
-hl.gesture({ fingers = 2, direction = "pinch", mods = mainMod, action = "cursor_zoom", zoom_level = 1.2, mode = "live" })
+hl.gesture({ fingers = 2, direction = "pinch", mods = MOD, action = "cursor_zoom", zoom_level = 1.2, mode = "live" })
 hl.gesture({ fingers = 3, direction = "vertical", action = "workspace" })
 hl.gesture({ fingers = 3, direction = "horizontal", action = "scroll_move" })
-hl.gesture({ fingers = 3, direction = "swipe", mods = mainMod, action = "resize" })
+hl.gesture({ fingers = 3, direction = "swipe", mods = MOD, action = "resize" })
 -- hl.gesture({ fingers = 4, direction = "down", action = put lockscreen here })
 -- hl.gesture({ fingers = 4, direction = "up", action = workspace overview })
 -- hl.gesture({ fingers = 4, direction = "horizontal", action = })
@@ -338,7 +341,7 @@ for name,pro in pairs(specialWorkspaces) do
 		fullscreen_state = pro.full,
 	})
 
-  hl.bind(mainMod .. " + " .. pro.key, function()
+  hl.bind(MOD .. pro.key, function()
       local ws = "special:" .. name
 
       local visible = false
@@ -368,29 +371,29 @@ end
 
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(mainMod .. " + CTRL + H", hl.dsp.exec_cmd("~/.config/hypr/scripts/exit-hyprland.sh"))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd('hyprctl reload && notify-send "Hyprland" "Hyprland reloaded"'))
-hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop & notify-send "Waybar" "Waybar enabled")'))
-hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configExternal & notify-send "Waybar" "Waybar enabled")'))
--- hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd('killall waybar && (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config) & notify-send "Waybar" "Waybar reloaded"'))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
--- hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("notion-desktop"))
--- hl.bind(mainMod .. " + D", hl.dsp.exec_cmd('if hyprctl clients | grep "class: discord"; then hyprctl dispatch closewindow class:discord; else discord; fi'))
--- hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special("discordWorkspace"))
-hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("discover-overlay -x || discover-overlay"))
--- hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('if hyprctl clients | grep "com.github.th_ch.youtube_music"; then hyprctl dispatch closewindow class:com.github.th_ch.youtube_music; else pear-desktop; fi'))
--- hl.bind(mainMod .. " + Z", hl.dsp.focus({ workspace = "M"}))
--- hl.bind(mainMod .. " + Y", hl.dsp.workspace.toggle_special("musicWorkspace"))
-hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 1, client = 0 }))
-hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 2, client = 0 }))
-hl.bind(mainMod .. " + ALT + F", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("systemctl suspend-then-hibernate"))
--- hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- dwindle
-hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
+hl.bind(MOD .. "CTRL + H", hl.dsp.exec_cmd("~/.config/hypr/scripts/exit-hyprland.sh"))
+hl.bind(MOD .. "R", hl.dsp.exec_cmd('hyprctl reload && notify-send "Hyprland" "Hyprland reloaded"'))
+hl.bind(MOD .. "Q", hl.dsp.window.close())
+hl.bind(MOD .. "CTRL + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop & notify-send "Waybar" "Waybar enabled")'))
+hl.bind(MOD .. "ALT + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configExternal & notify-send "Waybar" "Waybar enabled")'))
+-- hl.bind(MOD .. "CTRL + B", hl.dsp.exec_cmd('killall waybar && (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config) & notify-send "Waybar" "Waybar reloaded"'))
+hl.bind(MOD .. "E", hl.dsp.exec_cmd(fileManager))
+hl.bind(MOD .. "T", hl.dsp.exec_cmd(terminal))
+hl.bind(MOD .. "A", hl.dsp.exec_cmd(menu))
+hl.bind(MOD .. "B", hl.dsp.exec_cmd(browser))
+-- hl.bind(MOD .. "N", hl.dsp.exec_cmd("notion-desktop"))
+-- hl.bind(MOD .. "D", hl.dsp.exec_cmd('if hyprctl clients | grep "class: discord"; then hyprctl dispatch closewindow class:discord; else discord; fi'))
+-- hl.bind(MOD .. "D", hl.dsp.workspace.toggle_special("discordWorkspace"))
+hl.bind(MOD .. "SHIFT + D", hl.dsp.exec_cmd("discover-overlay -x || discover-overlay"))
+-- hl.bind(MOD .. "Y", hl.dsp.exec_cmd('if hyprctl clients | grep "com.github.th_ch.youtube_music"; then hyprctl dispatch closewindow class:com.github.th_ch.youtube_music; else pear-desktop; fi'))
+-- hl.bind(MOD .. "Z", hl.dsp.focus({ workspace = "M"}))
+-- hl.bind(MOD .. "Y", hl.dsp.workspace.toggle_special("musicWorkspace"))
+hl.bind(MOD .. "SHIFT + F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 1, client = 0 }))
+hl.bind(MOD .. "F", hl.dsp.window.fullscreen_state({ action = "toggle", internal = 2, client = 0 }))
+hl.bind(MOD .. "ALT + F", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(MOD .. "P", hl.dsp.exec_cmd("systemctl suspend-then-hibernate"))
+-- hl.bind(MOD .. "P", hl.dsp.window.pseudo()) -- dwindle
+hl.bind(MOD .. "X", hl.dsp.layout("togglesplit")) -- dwindle
 
 
 -- For controlling androids
@@ -399,15 +402,15 @@ hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
 --     on_created_empty = 'scrcpy --otg --shortcut-mod=lsuper --window-title="specialScrcpy"',
 -- })
 --
--- -- hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
--- -- hl.bind(mainMod .. " + S", hl.dsp.sendshortcut("ALT_R", "Return"))
--- hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("hyprctl dispatch togglespecialworkspace scrcpyWorkspace"))
--- hl.bind(mainMod .. " + S", hl.dsp.submap("scrcpyMode"))
+-- -- hl.bind(MOD .. "S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
+-- -- hl.bind(MOD .. "S", hl.dsp.sendshortcut("ALT_R", "Return"))
+-- hl.bind(MOD .. "S", hl.dsp.exec_cmd("hyprctl dispatch togglespecialworkspace scrcpyWorkspace"))
+-- hl.bind(MOD .. "S", hl.dsp.submap("scrcpyMode"))
 --
 -- hl.define_submap("scrcpyMode", function()
---     hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
---     hl.bind(mainMod .. " + S", hl.dsp.submap("reset"))
---     hl.bind(mainMod .. " + Escape", hl.dsp.submap("reset"))
+--     hl.bind(MOD .. "S", hl.dsp.workspace.toggle_special("scrcpyWorkspace"))
+--     hl.bind(MOD .. "S", hl.dsp.submap("reset"))
+--     hl.bind(MOD .. "Escape", hl.dsp.submap("reset"))
 --
 --     hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 --     hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
@@ -428,44 +431,44 @@ hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
 --     no_blur  = true,
 -- })
 
--- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ monitor = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ monitor = "right" }))
--- hl.bind(mainMod .. " + Up",   hl.dsp.focus({ monitor = "up" }))
--- hl.bind(mainMod .. " + Down", hl.dsp.focus({ monitor = "down" }))
-hl.bind(mainMod .. " + H", hl.dsp.layout("focus l"))
-hl.bind(mainMod .. " + L", hl.dsp.layout("focus r"))
-hl.bind(mainMod .. " + K", hl.dsp.layout("focus u"))
-hl.bind(mainMod .. " + J", hl.dsp.layout("focus d"))
-hl.bind(subMod .. " + tab", hl.dsp.focus({ last = true }))
--- hl.bind(mainMod .. " + H", hl.dsp.focus({ window = "left" }))
--- hl.bind(mainMod .. " + L", hl.dsp.focus({ window = "right" }))
--- hl.bind(mainMod .. " + K", hl.dsp.focus({ window = "up" }))
--- hl.bind(mainMod .. " + J", hl.dsp.focus({ window = "down" }))
+-- Move focus with MOD + arrow keys
+hl.bind(MOD .. "left",  hl.dsp.focus({ monitor = "left" }))
+hl.bind(MOD .. "right", hl.dsp.focus({ monitor = "right" }))
+-- hl.bind(MOD .. "Up",   hl.dsp.focus({ monitor = "up" }))
+-- hl.bind(MOD .. "Down", hl.dsp.focus({ monitor = "down" }))
+hl.bind(MOD .. "H", hl.dsp.layout("focus l"))
+hl.bind(MOD .. "L", hl.dsp.layout("focus r"))
+hl.bind(MOD .. "K", hl.dsp.layout("focus u"))
+hl.bind(MOD .. "J", hl.dsp.layout("focus d"))
+-- hl.bind(subMod .. "tab", hl.dsp.focus({ last = true }))
+-- hl.bind(MOD .. "H", hl.dsp.focus({ window = "left" }))
+-- hl.bind(MOD .. "L", hl.dsp.focus({ window = "right" }))
+-- hl.bind(MOD .. "K", hl.dsp.focus({ window = "up" }))
+-- hl.bind(MOD .. "J", hl.dsp.focus({ window = "down" }))
 
-hl.bind(mainMod .. " + up", hl.dsp.focus({ workspace = "next" }))
-hl.bind(mainMod .. " + down",   hl.dsp.focus({ workspace = "previous" }))
--- Switch workspaces with mainMod + [0-9]
--- Move active window to a workspace with mainMod + SHIFT + [0-9]
+hl.bind(MOD .. "up", hl.dsp.focus({ workspace = "next" }))
+hl.bind(MOD .. "down",   hl.dsp.focus({ workspace = "previous" }))
+-- Switch workspaces with MOD + [0-9]
+-- Move active window to a workspace with MOD + SHIFT + [0-9]
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i }))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+    hl.bind(MOD .. "" .. key,             hl.dsp.focus({ workspace = i }))
+    hl.bind(MOD .. "SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
 -- Example special workspace (scratchpad)
-hl.bind(mainMod .. " + W",         hl.dsp.workspace.toggle_special("▧"))
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.window.move({ workspace = "special:▧" }))
+hl.bind(MOD .. "W",         hl.dsp.workspace.toggle_special("▧"))
+hl.bind(MOD .. "SHIFT + W", hl.dsp.window.move({ workspace = "special:▧" }))
 
--- Scroll through existing workspaces with mainMod + scroll
--- hl.bind(mainMod .. " + tab",        hl.dsp.focus({ workspace = "e+1" }))
--- hl.bind(mainMod .. " + SHIFT + tab", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "m-1" }))
+-- Scroll through existing workspaces with MOD + scroll
+-- hl.bind(MOD .. "tab",        hl.dsp.focus({ workspace = "e+1" }))
+-- hl.bind(MOD .. "SHIFT + tab", hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(MOD .. "mouse_down", hl.dsp.focus({ workspace = "m+1" }))
+hl.bind(MOD .. "mouse_up",   hl.dsp.focus({ workspace = "m-1" }))
 
--- Move/resize windows with mainMod + LMB/RMB and dragging
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+-- Move/resize windows with MOD + LMB/RMB and dragging
+hl.bind(MOD .. "mouse:272", hl.dsp.window.drag(),   { mouse = true })
+hl.bind(MOD .. "mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
@@ -516,4 +519,4 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 
 
 
-require("conf.plugins.scrolloverview")
+require("conf.plugins.overview.scroll-overview")
