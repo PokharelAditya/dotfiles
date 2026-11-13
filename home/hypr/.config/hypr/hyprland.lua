@@ -50,6 +50,7 @@ local fileManager = "thunar"
 local menu        = "rofi -show drun"
 local browser     = "brave"
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
+local subMod = "ALT" -- Sets "Windows" key as main modifier
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
@@ -106,7 +107,6 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 -----------------------
 
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
-
 hl.config({
     general = {
         gaps_in  = 5,
@@ -124,8 +124,12 @@ hl.config({
         -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
         allow_tearing = false,
 
-        layout = "dwindle",
+        layout = "scrolling",
     },
+        scrolling = {
+          fullscreen_on_one_column = false,
+          column_width = 0.5,
+        },
 
     layout = {
         single_window_aspect_ratio = {7,5},
@@ -181,9 +185,7 @@ hl.animation({ leaf = "layersIn",            enabled = true,  speed = 4,    bezi
 hl.animation({ leaf = "layersOut",           enabled = true,  speed = 1.5,  bezier = "linear",       style = "fade" })
 hl.animation({ leaf = "fadeLayersIn",        enabled = true,  speed = 1.79, bezier = "almostLinear" })
 hl.animation({ leaf = "fadeLayersOut",       enabled = true,  speed = 1.39, bezier = "almostLinear" })
-hl.animation({ leaf = "workspaces",          enabled = true,  speed = 1.94, bezier = "almostLinear", style = "slide" })
-hl.animation({ leaf = "workspacesIn",        enabled = true,  speed = 1.21, bezier = "almostLinear", style = "slide" })
-hl.animation({ leaf = "workspacesOut",       enabled = true,  speed = 1.94, bezier = "almostLinear", style = "slide" })
+hl.animation({ leaf = "workspaces",          enabled = true,  speed = 1.94, bezier = "almostLinear", style = "slidevert" })
 hl.animation({ leaf = "zoomFactor",          enabled = true,  speed = 7,    bezier = "quick" })
 hl.animation({ leaf = "specialWorkspaceIn",  enabled = true,  speed = 2,    bezier = "almostLinear", style = "slide bottom" })
 hl.animation({ leaf = "specialWorkspaceOut", enabled = true,  speed = 2,    bezier = "almostLinear", style = "slide top" })
@@ -240,10 +242,13 @@ hl.config({
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
-hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-hl.gesture({ fingers = 3, direction = "vertical",   action = "special",  workspace_name = "musicWorkspace" })
-hl.gesture({ fingers = 4, direction = "vertical",   action = "special",  workspace_name = "discordWorkspace" })
-
+hl.gesture({ fingers = 2, direction = "pinch", mods = mainMod, action = "cursor_zoom", zoom_level = 1.2, mode = "live" })
+hl.gesture({ fingers = 3, direction = "vertical", action = "workspace" })
+hl.gesture({ fingers = 3, direction = "horizontal", action = "scroll_move" })
+hl.gesture({ fingers = 3, direction = "swipe", mods = mainMod, action = "resize" })
+-- hl.gesture({ fingers = 4, direction = "down", action = put lockscreen here })
+-- hl.gesture({ fingers = 4, direction = "up", action = workspace overview })
+-- hl.gesture({ fingers = 4, direction = "horizontal", action = })
 
 -- Example per-device config
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices/ for more
@@ -280,20 +285,37 @@ hl.device({
 ---- WORKSPACE RULES  ----
 --------------------------
 
+-- local function fit_widths(is_open)
+--     local ws = hl.get_active_workspace()
+--     if not ws then return end
+--     if tostring(ws.name):match("^special:") then return end  -- leave special workspaces alone
+--
+--     local n = #hl.get_workspace_windows(ws.id)
+--
+--     if n == 1 then
+--         hl.dispatch(hl.dsp.layout("colresize all 0.8"))
+--     elseif n == 2 and is_open then
+--         hl.dispatch(hl.dsp.layout("colresize all 0.5"))
+--     end
+-- end
+--
+-- hl.on("window.open",    function() fit_widths(true)  end)
+-- hl.on("window.destroy", function() fit_widths(false) end)
+
 local specialWorkspaces = {
-  ["btop"] = {
+  ["⌘"] = {
     app = "kitty btop",
     monitor = "lenovoMonitor",
     key = "Escape",
     full = 1
   },
-  ["yt-music"] = {
+  ["♬"] = {
     app = "pear-desktop",
     monitor = "huaweiTab",
-    key = "Y",
+    key = "M",
     full = 2
   },
-  ["discord"] = {
+  ["◉"] = {
     app = "discord",
     monitor = "lenovoMonitor",
     key = "D",
@@ -302,7 +324,7 @@ local specialWorkspaces = {
 }
 
 hl.on("workspace.created", function(ws)
-  local short = ws.name:match("^special:(.-)Workspace$")
+  local short = ws.name:match("^special:(.+)$")
 	local pro = specialWorkspaces[short]
 	if pro and ws.is_empty then
 		hl.exec_cmd(pro.app)
@@ -312,30 +334,29 @@ end)
 for name,pro in pairs(specialWorkspaces) do
 	hl.window_rule({
 		name = "fs-" .. name,
-		match = { workspace = "special:" .. name .. "Workspace" },
+		match = { workspace = "special:" .. name },
 		fullscreen_state = pro.full,
 	})
 
   hl.bind(mainMod .. " + " .. pro.key, function()
-      local ws   = name .. "Workspace"
-      local full = "special:" .. ws
+      local ws = "special:" .. name
 
       local visible = false
       for _, m in ipairs(hl.get_monitors()) do
           local sp = m.active_special_workspace
-          if sp and sp.name == full then visible = true end
+          if sp and sp.name == ws then visible = true end
       end
 
       local w = hl.get_active_window()
-      local focused = w ~= nil and w.workspace ~= nil and w.workspace.name == full
+      local focused = w ~= nil and w.workspace ~= nil and w.workspace.name == ws
 
-      if visible and focused then
-          hl.dispatch(hl.dsp.workspace.toggle_special(ws))
+      if focused then
+          hl.dispatch(hl.dsp.workspace.toggle_special(name))
       elseif visible then
           hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
       else
           hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
-          hl.dispatch(hl.dsp.workspace.toggle_special(ws))
+          hl.dispatch(hl.dsp.workspace.toggle_special(name))
       end
   end)
 end
@@ -408,16 +429,22 @@ hl.bind(mainMod .. " + X", hl.dsp.layout("togglesplit")) -- dwindle
 -- })
 
 -- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + left",  hl.dsp.focus({ monitor = "left" }))
+hl.bind(mainMod .. " + right", hl.dsp.focus({ monitor = "right" }))
+-- hl.bind(mainMod .. " + Up",   hl.dsp.focus({ monitor = "up" }))
+-- hl.bind(mainMod .. " + Down", hl.dsp.focus({ monitor = "down" }))
+hl.bind(mainMod .. " + H", hl.dsp.layout("focus l"))
+hl.bind(mainMod .. " + L", hl.dsp.layout("focus r"))
+hl.bind(mainMod .. " + K", hl.dsp.layout("focus u"))
+hl.bind(mainMod .. " + J", hl.dsp.layout("focus d"))
+hl.bind(subMod .. " + tab", hl.dsp.focus({ last = true }))
+-- hl.bind(mainMod .. " + H", hl.dsp.focus({ window = "left" }))
+-- hl.bind(mainMod .. " + L", hl.dsp.focus({ window = "right" }))
+-- hl.bind(mainMod .. " + K", hl.dsp.focus({ window = "up" }))
+-- hl.bind(mainMod .. " + J", hl.dsp.focus({ window = "down" }))
 
-hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
-
+hl.bind(mainMod .. " + up", hl.dsp.focus({ workspace = "next" }))
+hl.bind(mainMod .. " + down",   hl.dsp.focus({ workspace = "previous" }))
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
 for i = 1, 10 do
@@ -427,14 +454,14 @@ for i = 1, 10 do
 end
 
 -- Example special workspace (scratchpad)
-hl.bind(mainMod .. " + W",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + W",         hl.dsp.workspace.toggle_special("▧"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.window.move({ workspace = "special:▧" }))
 
 -- Scroll through existing workspaces with mainMod + scroll
-hl.bind(mainMod .. " + tab",        hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + SHIFT + tab", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+-- hl.bind(mainMod .. " + tab",        hl.dsp.focus({ workspace = "e+1" }))
+-- hl.bind(mainMod .. " + SHIFT + tab", hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "m+1" }))
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "m-1" }))
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
@@ -466,24 +493,27 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 -- hl.window_rule({ name = "float-kitty", match = { class = "^(kitty)$", title = "^(kitty)$" }, float = true })
 
 -- Ignore maximize requests from apps. You'll probably like this.
-hl.window_rule({
-    name  = "suppress-maximize-events",
-    match = { class = ".*" },
-    suppress_event = "maximize",
-})
+-- hl.window_rule({
+--     name  = "suppress-maximize-events",
+--     match = { class = ".*" },
+--     suppress_event = "maximize",
+-- })
+--
+-- -- Fix some dragging issues with XWayland
+-- hl.window_rule({
+--     name  = "fix-xwayland-drags",
+--     match = {
+--         class      = "^$",
+--         title      = "^$",
+--         xwayland   = true,
+--         float      = true,
+--         fullscreen = false,
+--         pin        = false,
+--     },
+--     no_focus = true,
+-- })
+--
 
--- Fix some dragging issues with XWayland
-hl.window_rule({
-    name  = "fix-xwayland-drags",
-    match = {
-        class      = "^$",
-        title      = "^$",
-        xwayland   = true,
-        float      = true,
-        fullscreen = false,
-        pin        = false,
-    },
-    no_focus = true,
-})
 
 
+require("conf.plugins.scrolloverview")
