@@ -1,171 +1,22 @@
+------------------
 ---- HYPRLAND ----
-
-local function debug(data)
-    local file = io.open("/tmp/hyprland-debug.log", "a")
-    if file then
-        file:write(tostring(data) .. "\n")
-        file:close()
-    end
-end
-
-
-------------------
----- MONITORS ----
 ------------------
 
-require("monitors")
-require("conf.eDP")
+require("conf.debug.debug")
+require("conf.monitors.monitors")
+require("conf.looks.looks")
+require("conf.layouts.layouts")
 
-require("workspaces")
+require("conf.autostart.autostart")
 
+require("conf.short.default")
 
--------------------
----- AUTOSTART ----
--------------------
-
-hl.on("hyprland.start", function()
-    hl.exec_cmd("xhost +SI:localuser:root")
-    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
-
-    hl.exec_cmd("systemctl --user restart skwd-walld.service")
-    hl.exec_cmd("waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop")
-    hl.exec_cmd("kdeconnect-indicator")
-    -- hl.exec_cmd("sleep 2 && rog-control-center &")
-    -- hl.exec_cmd("sleep 2 && cardwire-gui &")
-    -- hl.exec_cmd("sleep 2 && discover-overlay &")
-    -- hl.exec_cmd("sleep 2 && tailscale systray &")
-
-    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery/ac-battery-switch.sh")
-    hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/gpu/backlit.sh")
-    -- hl.exec_cmd("sleep 2 && /home/adityaarch/.config/hypr/scripts/battery-notification.sh &")
-end)
+require("conf.environments.env")
 
 
----------------------
----- MY PROGRAMS ----
----------------------
-
-local terminal    = "kitty"
-local fileManager = "thunar"
-local menu        = "rofi -show drun"
-local browser     = "brave"
-
-MOD = "SUPER + "
-ALT = "ALT + "
-SH = "SHIFT + "
-CTRL = "CTRL + "
-
--------------------------------
----- ENVIRONMENT VARIABLES ----
--------------------------------
-
-hl.env("XCURSOR_SIZE", "24")
--- hl.env("HYPRCURSOR_SIZE", "24")
--- hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
--- hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
--- hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
-
--- hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
--- hl.env("XDG_SESSION_TYPE", "wayland")
--- hl.env("XDG_SESSION_DESKTOP", "Hyprland")
-
-hl.env("QT_QPA_PLATFORM", "wayland")
-hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
--- hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
--- hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
--- hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
-
--- hl.env("GDK_SCALE", "1")
-
--- hl.env("GDK_BACKEND", "wayland,x11,*")
--- hl.env("CLUTTER_BACKEND", "wayland")
-
--- hl.env("MOZ_ENABLE_WAYLAND", "1")
-
--- hl.env("OZONE_PLATFORM", "wayland")
--- hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 
 
------------------------
------ PERMISSIONS -----
------------------------
 
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Permissions/
--- Please note permission changes here require a Hyprland restart and are not applied on-the-fly
--- for security reasons
-
--- hl.config({
---   ecosystem = {
---     enforce_permissions = true,
---   },
--- })
-
--- hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
--- hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
--- hl.permission("/usr/(bin|local/bin)/hyprpm", "plugin", "allow")
-
-
------------------------
----- LOOK AND FEEL ----
------------------------
-
--- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
-hl.config({
-    general = {
-        gaps_in  = 5,
-        gaps_out = 10,
-
-        border_size = 2,
-
-        col = {
-            active_border   = { colors = {"rgba(102,178,255,1)", "rgba(6,188,228,0.6)", "rgba(00,00,00,1)", "rgba(6,188,228,0.6)", "rgba(102,178,255,1)"}, angle = 90 },
-            inactive_border = "rgba(105,105,105,0.67)",
-        },
-
-        resize_on_border = false,
-
-        -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
-        allow_tearing = false,
-
-        layout = "scrolling",
-    },
-        scrolling = {
-          fullscreen_on_one_column = false,
-          column_width = 0.5,
-        },
-
-    layout = {
-        single_window_aspect_ratio = {7,5},
-        single_window_aspect_ratio_tolerance = 0.12
-    },
-
-    decoration = {
-        rounding       = 8,
-        rounding_power = 4,
-
-        -- Change transparency of focused and unfocused windows
-        active_opacity   = 1.0,
-        inactive_opacity = 0.9,
-
-        shadow = {
-            enabled      = true,
-            range        = 4,
-            render_power = 3,
-            color        = "rgba(26,26,26,0.93)",
-        },
-
-        blur = {
-            enabled   = true,
-            size      = 4,
-            passes    = 3,
-            vibrancy  = 0.1696,
-        },
-    },
-
-    animations = {
-        enabled = true,
-    },
-})
 
 -- Curves, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1}    } })
@@ -377,10 +228,10 @@ hl.bind(MOD .. "Q", hl.dsp.window.close())
 hl.bind(MOD .. "CTRL + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop & notify-send "Waybar" "Waybar enabled")'))
 hl.bind(MOD .. "ALT + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configExternal & notify-send "Waybar" "Waybar enabled")'))
 -- hl.bind(MOD .. "CTRL + B", hl.dsp.exec_cmd('killall waybar && (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/config) & notify-send "Waybar" "Waybar reloaded"'))
-hl.bind(MOD .. "E", hl.dsp.exec_cmd(fileManager))
-hl.bind(MOD .. "T", hl.dsp.exec_cmd(terminal))
-hl.bind(MOD .. "A", hl.dsp.exec_cmd(menu))
-hl.bind(MOD .. "B", hl.dsp.exec_cmd(browser))
+hl.bind(MOD .. "E", hl.dsp.exec_cmd(FILE))
+hl.bind(MOD .. "T", hl.dsp.exec_cmd(TERM))
+hl.bind(MOD .. "A", hl.dsp.exec_cmd(MENU))
+hl.bind(MOD .. "B", hl.dsp.exec_cmd(BROWSER))
 -- hl.bind(MOD .. "N", hl.dsp.exec_cmd("notion-desktop"))
 -- hl.bind(MOD .. "D", hl.dsp.exec_cmd('if hyprctl clients | grep "class: discord"; then hyprctl dispatch closewindow class:discord; else discord; fi'))
 -- hl.bind(MOD .. "D", hl.dsp.workspace.toggle_special("discordWorkspace"))

@@ -20,31 +20,50 @@ hl.config({
     },
 })
 
-hl.bind(MOD .. "tab", hl.plugin.scrolloverview.overview("open"))
-hl.gesture({ fingers = 4, direction = "up", action = function() hl.dispatch(hl.plugin.scrolloverview.overview("open")) end })
+local altTab = require("conf.plugins.overview.alt-tab")
+
+local openOverview = hl.plugin.scrolloverview.overview("open")
+local closeOverview = hl.plugin.scrolloverview.overview("close")
+local selectOverview = hl.plugin.scrolloverview.overview("select")
+local selectWindow = hl.plugin.scrolloverview.window("select")
+
+local function open_overview()
+    if hl.get_current_submap() == "scrolloverview" then
+        return
+    end
+
+    altTab.restore()
+    hl.dispatch(openOverview)
+end
+
+local function close_overview()
+    hl.dispatch(closeOverview)
+    altTab.restore()
+end
+
+hl.bind(MOD .. "tab", open_overview)
+hl.gesture({ fingers = 4, direction = "up", action = open_overview })
 
 hl.define_submap("scrolloverview", function()
-    hl.bind(MOD .. "tab", hl.plugin.scrolloverview.overview("close"))
-    hl.gesture({ fingers = 4, direction = "down", action = function() hl.dispatch(hl.plugin.scrolloverview.overview("close")) end })
+    hl.bind(MOD .. "tab", close_overview)
+    hl.gesture({ fingers = 4, direction = "down", action = close_overview })
 
     hl.bind("H", hl.plugin.scrolloverview.navigate("left"))
     hl.bind("L", hl.plugin.scrolloverview.navigate("right"))
     hl.bind("K", hl.plugin.scrolloverview.navigate("up"))
     hl.bind("J", hl.plugin.scrolloverview.navigate("down"))
 
-    hl.bind("O", hl.plugin.scrolloverview.overview("close"))
+    hl.bind("O", close_overview)
     hl.bind("Q", hl.dsp.window.close())
 
     hl.bind("mouse:272", function()
-        hl.plugin.scrolloverview.overview("select")
-        hl.plugin.scrolloverview.window("select")
-        hl.plugin.scrolloverview.overview("off")
+        hl.dispatch(selectOverview)
+        hl.dispatch(selectWindow)
+        close_overview()
     end, { mouse = true })
     hl.bind(MOD .. "mouse:272", hl.dsp.window.drag(), { mouse = true })
 end)
 
-local altTab = require("conf.plugins.overview.alt-tab")
-
 hl.bind(ALT .. "tab", altTab.next, { submap_universal = true })
-hl.bind(ALT .. "Alt_L", altTab.close, { release = true, transparent = true })
-hl.bind(ALT .. "Alt_R", altTab.close, { release = true, transparent = true })
+hl.bind(ALT .. "Alt_L", altTab.close, { release = true, transparent = true, submap_universal = true })
+hl.bind(ALT .. "Alt_R", altTab.close, { release = true, transparent = true, submap_universal = true })

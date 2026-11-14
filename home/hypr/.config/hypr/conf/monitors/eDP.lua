@@ -1,3 +1,7 @@
+------------------------
+---- LAPTOP DISPLAY ----
+------------------------
+
 local resolution = "1920x1080"
 local refreshRate = 144
 local position = "3800x1200"

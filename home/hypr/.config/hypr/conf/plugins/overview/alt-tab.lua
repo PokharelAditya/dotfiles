@@ -1,6 +1,12 @@
 local M = {}
 
 local openedByAltTab = false
+local previousConfig
+
+local overviewOn = hl.plugin.scrolloverview.overview("on")
+local overviewOff = hl.plugin.scrolloverview.overview("off")
+local navigateLeft = hl.plugin.scrolloverview.navigate("left")
+local navigateRight = hl.plugin.scrolloverview.navigate("right")
 
 local function object_value(value, key)
     if value == nil then
@@ -31,37 +37,59 @@ local function navigate_to_first_column()
         end
 
         previousState = currentState
-        hl.plugin.scrolloverview.navigate("left")
+        hl.dispatch(navigateLeft)
     end
 end
 
 local function navigate_next_column()
     local previousState = selection_state()
-    hl.plugin.scrolloverview.navigate("right")
+    hl.dispatch(navigateRight)
 
     if selection_state() == previousState then
         navigate_to_first_column()
     end
 end
 
+function M.restore()
+    if previousConfig then
+        hl.config({ plugin = { scrolloverview = previousConfig } })
+        previousConfig = nil
+    end
+
+    openedByAltTab = false
+end
+
 function M.next()
-    hl.config({
-        plugin = {
-            scrolloverview = {
-                layout = "horizontal",
-                scale = 0.3,
+    if not openedByAltTab then
+        -- Leave an already-open Super+Tab overview unchanged.
+        if hl.get_current_submap() == "scrolloverview" then
+            return
+        end
+
+        previousConfig = {
+            layout = hl.get_config("plugin:scrolloverview:layout"),
+            scale = hl.get_config("plugin:scrolloverview:scale"),
+        }
+
+        hl.config({
+            plugin = {
+                scrolloverview = {
+                    layout = "horizontal",
+                    scale = 0.8,
+                },
             },
-        },
-    })
-    hl.plugin.scrolloverview.overview("on")
-    openedByAltTab = true
+        })
+        hl.dispatch(overviewOn)
+        openedByAltTab = true
+    end
+
     navigate_next_column()
 end
 
 function M.close()
     if openedByAltTab then
-        hl.plugin.scrolloverview.overview("off")
-        openedByAltTab = false
+        hl.dispatch(overviewOff)
+        M.restore()
     end
 end
 
