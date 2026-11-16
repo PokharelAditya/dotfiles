@@ -18,7 +18,7 @@
       "handMoveRibbon": true,
       "handMoveShuffle": true,
       "handMoveSpiral": true,
-      "lastAppliedKey": "static:Pictures/Samurai Wallpaper.jpg",
+      "lastAppliedKey": "video:Videos/GTR-Silver.mp4",
       "roundCorners": false,
       "savedLayouts": [
         {
@@ -124,7 +124,7 @@
       "color": -1,
       "favouritesOnly": false,
       "folder": "*",
-      "kind": "",
+      "kind": "video",
       "orient": "",
       "resolution": "",
       "sort": "recent"
@@ -403,7 +403,12 @@
     "mode": "dark",
     "policy": "wallpaper",
     "scheme": "tonal-spot",
-    "style": "natural"
+    "style": "natural",
+    "wallpaperProfiles": [
+      {
+        "key": "video:Videos/GTR-Silver.mp4"
+      }
+    ]
   },
   "wallpaperMute": true
 }

@@ -111,7 +111,10 @@ def tint_color(base_h, base_s, base_l, source_h, source_s, source_l, tint_streng
     if tint_strength == 0 or base_l in (0, 1):
         return base_h, base_s, base_l
 
-    amount = tint_strength * (2 - tint_strength)
+    # Smoothstep easing: gentle at low strength, aggressive at high.
+    t = tint_strength
+    amount = t * t * (3 - 2 * t)
+
     lightness, a, b = _rgb_to_oklab(
         colorsys.hls_to_rgb((base_h % 360) / 360, base_l, base_s)
     )
@@ -123,28 +126,31 @@ def tint_color(base_h, base_s, base_l, source_h, source_s, source_l, tint_streng
     source_hue = math.atan2(source_b, source_a)
 
     if chroma < 0.02:
-        target_chroma = min(0.018, source_chroma * 0.2)
-        a = a * (1 - amount) + math.cos(source_hue) * target_chroma * amount
-        b = b * (1 - amount) + math.sin(source_hue) * target_chroma * amount
+        # Neutrals: blend toward a faint tint of the wallpaper.
+        target_chroma = min(0.025, source_chroma * 0.3) * amount
+        a = a * (1 - amount) + math.cos(source_hue) * target_chroma
+        b = b * (1 - amount) + math.sin(source_hue) * target_chroma
     else:
         hue = math.atan2(b, a)
         diff = (source_hue - hue + math.pi) % (2 * math.pi) - math.pi
-        # Allow enough rotation so colors genuinely lean toward the wallpaper,
-        # but cap it so the six ANSI hues never collapse into one.
-        limit = math.radians(40)
         influence = min(1.0, source_chroma / 0.04)
-        hue += max(-limit, min(limit, diff * 0.6)) * amount * influence
 
-        # Blend chroma toward the wallpaper's own intensity.
-        target_chroma = source_chroma * 0.7 + chroma * 0.3
-        target_chroma = min(target_chroma, 0.16)
-        chroma += (target_chroma - chroma) * amount * 0.6
+        # Hue: rotate strongly toward the wallpaper. Each color keeps 15%
+        # of its original angular offset so that different ANSI colors
+        # remain distinguishable even at full strength.
+        hue = hue + diff * amount * 0.85 * influence
 
-        # Pull lightness gently toward the wallpaper's neighbourhood.
-        target_lightness = source_lightness * 0.35 + 0.65 * min(
-            0.82, 0.70 + (lightness - 0.70) * 0.5
-        )
-        lightness += (target_lightness - lightness) * amount * 0.5
+        # Chroma: interpolate toward the wallpaper's own saturation.
+        target_chroma = chroma + (source_chroma - chroma) * amount * 0.75
+        chroma = max(0.025, min(target_chroma, 0.22))
+
+        # Lightness: interpolate toward the wallpaper's brightness,
+        # clamped to a readable range that scales with the base lightness
+        # so bright ANSI variants always stay brighter than normal ones.
+        target_lightness = lightness + (source_lightness - lightness) * amount * 0.6
+        floor = 0.35 + lightness * 0.08
+        lightness = max(floor, min(0.92, target_lightness))
+
         a, b = math.cos(hue) * chroma, math.sin(hue) * chroma
 
     return _oklab_to_hsl(lightness, a, b)

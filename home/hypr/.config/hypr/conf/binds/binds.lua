@@ -29,6 +29,7 @@ hl.bind(MOD .. "ALT + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(MOD .. "P", hl.dsp.exec_cmd("systemctl suspend-then-hibernate"))
 -- hl.bind(MOD .. "P", hl.dsp.window.pseudo()) -- dwindle
 hl.bind(MOD .. "X", hl.dsp.layout("togglesplit")) -- dwindle
+hl.bind(MOD .. ALT .. "W", hl.dsp.exec_cmd("skwd-wall-v2")) -- dwindle
 
 
 -- For controlling androids

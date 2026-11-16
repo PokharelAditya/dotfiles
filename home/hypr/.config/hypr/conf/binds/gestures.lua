@@ -38,4 +38,3 @@ hl.gesture({
 	end,
 })
 -- hl.gesture({ fingers = 4, direction = "horizontal", action = })
--- hl.gesture({ fingers = 4, direction = "pinch", action = "close" })
