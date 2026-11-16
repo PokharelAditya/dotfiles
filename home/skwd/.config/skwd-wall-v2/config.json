@@ -18,7 +18,7 @@
       "handMoveRibbon": true,
       "handMoveShuffle": true,
       "handMoveSpiral": true,
-      "lastAppliedKey": "video:Videos/GTR-Silver.mp4",
+      "lastAppliedKey": "static:Pictures/Samurai Wallpaper.jpg",
       "roundCorners": false,
       "savedLayouts": [
         {
@@ -124,7 +124,7 @@
       "color": -1,
       "favouritesOnly": false,
       "folder": "*",
-      "kind": "video",
+      "kind": "",
       "orient": "",
       "resolution": "",
       "sort": "recent"
