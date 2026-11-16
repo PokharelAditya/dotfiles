@@ -49,6 +49,31 @@
       "hdr_max_lum": 0.0,
       "hdr_max_avg_lum": 0.0,
       "active": true
+    },
+    {
+      "name": "huaweiTab",
+      "description": "",
+      "x": 5720,
+      "y": 2224,
+      "physical_width": 1280,
+      "physical_height": 800,
+      "transform": "normal",
+      "scale": 1.0,
+      "scale_filter": null,
+      "refresh": 60.0,
+      "dpms": true,
+      "adaptive_sync": false,
+      "custom_mode": false,
+      "mirror": "",
+      "ten_bit": true,
+      "color_mode": "",
+      "sdr_brightness": 1.0,
+      "sdr_saturation": 1.0,
+      "primary": false,
+      "hdr_min_lum": 0.0,
+      "hdr_max_lum": 0.0,
+      "hdr_max_avg_lum": 0.0,
+      "active": true
     }
   ],
   "config": {

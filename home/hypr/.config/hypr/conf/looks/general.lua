@@ -29,4 +29,9 @@ hl.config({
 			window_gap = 12,
 		},
 	},
+
+	misc = {
+		force_default_wallpaper = 0,
+		disable_hyprland_logo = true,
+	},
 })

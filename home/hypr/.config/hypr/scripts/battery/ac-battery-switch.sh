@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FILE="$HOME/.config/hypr/conf/eDP.lua"
+FILE="$HOME/.config/hypr/conf/monitors/eDP.lua"
 POWER="/sys/class/power_supply/ACAD/online"
 
 LAST=""

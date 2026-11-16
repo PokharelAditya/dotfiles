@@ -1,7 +1,7 @@
 {
   "displays": [
     {
-      "name": "eDP-2",
+      "name": "eDP-1",
       "description": "Najing CEC Panda FPD Technology CO. ltd 0x004D",
       "x": 3800,
       "y": 1200,
@@ -28,12 +28,12 @@
     {
       "name": "lenovoMonitor",
       "description": "",
-      "x": 5740,
-      "y": 0,
+      "x": 5720,
+      "y": 1200,
       "physical_width": 1280,
       "physical_height": 1024,
       "transform": "normal",
-      "scale": 1.0,
+      "scale": 1,
       "scale_filter": null,
       "refresh": 75.0,
       "dpms": true,
@@ -58,7 +58,7 @@
       "physical_width": 1280,
       "physical_height": 800,
       "transform": "normal",
-      "scale": 0.9999999999999992,
+      "scale": 1,
       "scale_filter": null,
       "refresh": 60.0,
       "dpms": true,

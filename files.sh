@@ -36,6 +36,7 @@ PUBLIC_HOME_FILES=(
     ".config/qt5ct                            qt"
     ".config/qt6ct                            qt"
     ".config/rog                              rog"
+    ".config/skwd-wall-v2                     skwd"
     ".config/waybar                           waybar"
     ".config/brave-flags.conf                 brave"
     ".config/mimeapps.list                    desktop"

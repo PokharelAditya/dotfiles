@@ -1,49 +1,40 @@
 #!/usr/bin/env python3
 """
-Generate wallpaper-tinted ANSI terminal colors.
+Tint selected colors in an annotated theme file.
 
-Takes a source hex color (from wallpaper) and produces 16 ANSI colors
-that maintain distinct hues (red looks red, green looks green) but are
-tinted toward the wallpaper's dominant color.
+Theme annotations:
+  #Dominant #76d7c7
+  #TintBy 0.32
+  #Tint color1 #cc0403
 
-Usage: ./tint-colors.py <source_hex> [tint_strength]
-  source_hex:    Dominant wallpaper color, e.g. #a994ca
-  tint_strength: 0.0 (no tint) to 1.0 (full tint), default 0.25
+#Dominant sets the wallpaper source color; #TintBy sets strength from 0 to 1.
+#Tint marks a setting to uncomment and tint.
 
-Output: JSON with color0-color15 hex values
+Usage: ./tint-colors.py Matugen.conf [output.conf]
+  Default output: Matugen.tinted.conf, alongside the input file.
+  Only #Tint settings are changed; other lines and metadata are preserved.
+  The input file is never overwritten.
 """
 
-import sys
-import json
+import argparse
 import colorsys
+import re
+from pathlib import Path
 
-# Base ANSI hues (HSL) - standard terminal colors with good readability
-# Format: (hue 0-360, saturation 0-1, lightness 0-1)
-BASE_COLORS = {
-    # Normal (slightly muted, medium brightness)
-    "color0":  {"h": 0,   "s": 0.00, "l": 0.10},  # black
-    "color1":  {"h": 4,   "s": 0.72, "l": 0.62},  # red
-    "color2":  {"h": 120, "s": 0.55, "l": 0.55},  # green
-    "color3":  {"h": 40,  "s": 0.70, "l": 0.65},  # yellow
-    "color4":  {"h": 220, "s": 0.65, "l": 0.60},  # blue
-    "color5":  {"h": 280, "s": 0.50, "l": 0.60},  # magenta
-    "color6":  {"h": 180, "s": 0.55, "l": 0.55},  # cyan
-    "color7":  {"h": 0,   "s": 0.00, "l": 0.80},  # white
-
-    # Bright (more saturated, higher brightness)
-    "color8":  {"h": 0,   "s": 0.00, "l": 0.40},  # bright black
-    "color9":  {"h": 4,   "s": 0.80, "l": 0.72},  # bright red
-    "color10": {"h": 120, "s": 0.65, "l": 0.65},  # bright green
-    "color11": {"h": 40,  "s": 0.80, "l": 0.75},  # bright yellow
-    "color12": {"h": 220, "s": 0.75, "l": 0.72},  # bright blue
-    "color13": {"h": 280, "s": 0.60, "l": 0.72},  # bright magenta
-    "color14": {"h": 180, "s": 0.65, "l": 0.65},  # bright cyan
-    "color15": {"h": 0,   "s": 0.00, "l": 0.95},  # bright white
-}
+HEX_COLOR_RE = re.compile(r"#?[0-9a-fA-F]{6}")
+METADATA_RE = re.compile(r"[ \t]*#(Dominant|TintBy)\b[ \t]*(.*)")
+TINT_MARKER_RE = re.compile(r"[ \t]*#Tint\b")
+TINT_SETTING_RE = re.compile(
+    r"(?P<indent>[ \t]*)#Tint[ \t]+"
+    r"(?P<setting>[^ \t#]+)(?P<spacing>[ \t]+)"
+    r"(?P<color>#[0-9a-fA-F]{6})(?P<suffix>[ \t]*(?:#.*)?)"
+)
 
 
 def hex_to_hsl(hex_color):
     """Convert hex color to HSL."""
+    if not HEX_COLOR_RE.fullmatch(hex_color):
+        raise ValueError("expected a six-digit hex color, e.g. #a994ca")
     hex_color = hex_color.lstrip("#")
     r, g, b = (int(hex_color[i:i+2], 16) / 255.0 for i in (0, 2, 4))
     h, l, s = colorsys.rgb_to_hls(r, g, b)
@@ -63,7 +54,7 @@ def hsl_to_hex(h, s, l):
 
 def tint_color(base_h, base_s, base_l, source_h, source_s, tint_strength):
     """
-    Tint a base ANSI color toward the source wallpaper color.
+    Tint a base color toward the source wallpaper color.
 
     - Hue is shifted toward source hue
     - Saturation is blended with source saturation
@@ -96,34 +87,105 @@ def tint_color(base_h, base_s, base_l, source_h, source_s, tint_strength):
     return new_h, new_s, new_l
 
 
-def generate_tinted_colors(source_hex, tint_strength=0.25):
-    """Generate all 16 tinted ANSI colors."""
-    source_h, source_s, source_l = hex_to_hsl(source_hex)
+def parse_tint_strength(value):
+    """Require a finite tint strength between zero and one, inclusive."""
+    try:
+        strength = float(value)
+    except ValueError:
+        raise ValueError("tint strength must be a number between 0 and 1") from None
+    if not 0.0 <= strength <= 1.0:
+        raise ValueError("tint strength must be a number between 0 and 1")
+    return strength
 
-    result = {}
-    for name, base in BASE_COLORS.items():
-        h, s, l = tint_color(
-            base["h"], base["s"], base["l"],
-            source_h, source_s,
-            tint_strength
+
+def tint_theme(text):
+    """Replace #Tint settings using the theme's #Dominant and #TintBy."""
+    lines = text.splitlines(keepends=True)
+    metadata = {}
+
+    # Read directives first so they can appear anywhere in the file.
+    for number, line in enumerate(lines, start=1):
+        match = METADATA_RE.fullmatch(line.rstrip("\r\n"))
+        if not match:
+            continue
+        name, value = match.groups()
+        if name in metadata:
+            raise ValueError(f"line {number}: duplicate #{name} directive")
+        try:
+            if name == "Dominant":
+                metadata[name] = hex_to_hsl(value.strip())
+            else:
+                metadata[name] = parse_tint_strength(value.strip())
+        except ValueError as error:
+            raise ValueError(f"line {number}: #{name}: {error}") from error
+
+    missing = [f"#{name}" for name in ("Dominant", "TintBy") if name not in metadata]
+    if missing:
+        raise ValueError("missing required directives: " + ", ".join(missing))
+
+    source_h, source_s, _ = metadata["Dominant"]
+    strength = metadata["TintBy"]
+    result = []
+    for number, line in enumerate(lines, start=1):
+        content = line.rstrip("\r\n")
+        if not TINT_MARKER_RE.match(content):
+            result.append(line)
+            continue
+
+        match = TINT_SETTING_RE.fullmatch(content)
+        if not match:
+            raise ValueError(f"line {number}: expected '#Tint <setting> #RRGGBB'")
+
+        base_h, base_s, base_l = hex_to_hsl(match["color"])
+        tinted = hsl_to_hex(*tint_color(
+            base_h, base_s, base_l, source_h, source_s, strength
+        ))
+        ending = line[len(content):]
+        result.append(
+            match["indent"] + match["setting"] + match["spacing"]
+            + tinted + match["suffix"] + ending
         )
-        result[name] = hsl_to_hex(h, s, l)
 
-    return result
+    return "".join(result)
+
+
+def tint_theme_file(input_path, output_path):
+    """Validate and tint a theme before writing a separate output file."""
+    if input_path.resolve() == output_path.resolve() or (
+        output_path.exists() and input_path.samefile(output_path)
+    ):
+        raise ValueError("input and output must be different files")
+
+    with input_path.open(encoding="utf-8", newline="") as source:
+        result = tint_theme(source.read())
+    with output_path.open("w", encoding="utf-8", newline="") as output:
+        output.write(result)
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: tint-colors.py <source_hex> [tint_strength]", file=sys.stderr)
-        print("  source_hex:    e.g. #a994ca", file=sys.stderr)
-        print("  tint_strength: 0.0-1.0, default 0.25", file=sys.stderr)
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("input", type=Path, help="annotated theme file")
+    parser.add_argument(
+        "output", type=Path, nargs="?",
+        help="output file (default: add .tinted before the input file's extension)",
+    )
+    args = parser.parse_args()
 
-    source_hex = sys.argv[1]
-    tint_strength = float(sys.argv[2]) if len(sys.argv) > 2 else 0.25
-
-    colors = generate_tinted_colors(source_hex, tint_strength)
-    print(json.dumps(colors, indent=2))
+    try:
+        input_path = args.input.expanduser()
+        if args.output is None:
+            output_path = input_path.with_name(
+                f"{input_path.stem}.tinted{input_path.suffix}"
+            )
+        else:
+            output_path = args.output.expanduser()
+        tint_theme_file(input_path, output_path)
+        print(f"Wrote {output_path}")
+    except (OSError, ValueError) as error:
+        parser.error(str(error))
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 
 ACTIVE = "#66B2FF"
 INACTIVE = "#696969"
+OVERVIEW = "#000000"
 
 ACTIVE_BORDER = {
 	colors = {
@@ -47,4 +48,15 @@ INACTIVE_SHADOW = {
     INACTIVE .. "20",
   },
 	angle = 90,
+}
+
+OVERVIEW_SHADOW = {
+	colors = {
+    OVERVIEW .. "AA",
+    OVERVIEW .. "60",
+    OVERVIEW .. "20",
+    OVERVIEW .. "60",
+    OVERVIEW .. "AA",
+  },
+	angle = 0,
 }

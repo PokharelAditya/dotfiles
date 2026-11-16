@@ -32,7 +32,7 @@ fd 10.5.0-3
 feh 3.13.1-1
 firefox 160.0-1
 foliate 3.3.0-3
-fzf 0.74.5-1
+fzf 0.75.0-1
 gimp 3.2.8-1
 git 2.56.1-1
 git-filter-repo 2.47.0-3
@@ -48,8 +48,11 @@ gvfs 1.62.0-3
 gvfs-mtp 1.62.0-3
 gvfs-smb 1.62.0-3
 htop 3.5.3-1
+hypridle 0.1.8-2
 hyprland 0.57.2-1
+hyprlock 0.9.7-2
 hyprpm 0.57.2-1
+hyprshutdown 0.1.2-3
 i3-wm 4.25.1-1
 imagemagick 7.1.2.35-1
 jq 1.8.2-1
@@ -58,9 +61,9 @@ kdeconnect 26.08.3-2
 kitty 0.50.0-1
 lazygit 0.66.3-1
 less 1:710-1
-linux 7.3.4.arch1-1
+linux 7.3.4.arch1-2
 linux-firmware 20261019-1
-linux-headers 7.3.4.arch1-1
+linux-headers 7.3.4.arch1-2
 lua-language-server 3.19.2-1
 matugen 4.2.0-1
 mono 6.12.0.206-1
@@ -76,7 +79,7 @@ noto-fonts 1:2026.11.01-1
 noto-fonts-emoji 1:20260924-1
 npm 12.2.2-1
 ntfs-3g 2026.9.28-1
-nvidia-open 620.70.06-2
+nvidia-open 620.70.06-3
 nvidia-settings 620.70.06-1
 nvidia-utils 620.70.06-1
 nvtop 3.4.0-1
@@ -95,7 +98,7 @@ pipewire-jack 1:1.6.11-1
 pipewire-pulse 1:1.6.11-1
 plymouth 26.134.222-3
 polkit-gnome 0.105-12
-postgresql 18.6-5
+postgresql 18.7-1
 powertop 2.16.1-1
 python-matplotlib 3.11.2-1
 python-numpy 2.5.4-1
@@ -165,7 +168,7 @@ waybar 0.16.0-1
 wayvnc 0.10.2-1
 wev 1.1.0-1
 wget 1.25.0-6
-wine 11.21-1
+wine 11.22-1
 wireplumber 0.5.19-1
 wl-clipboard 1:2.3.0-1
 wlr-randr 0.5.0-1

@@ -54,8 +54,7 @@ hl.config({
 		},
 
 		wobble = {
-			enabled = true,
-      intensity = 0.1
+			enabled = false,
 		},
 	},
 })
