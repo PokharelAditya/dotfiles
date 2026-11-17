@@ -61,6 +61,7 @@ kdeconnect 26.08.3-2
 kitty 0.50.0-1
 lazygit 0.66.3-1
 less 1:710-1
+libinput-tools 1.32.0-1
 linux 7.3.4.arch1-2
 linux-firmware 20261019-1
 linux-headers 7.3.4.arch1-2

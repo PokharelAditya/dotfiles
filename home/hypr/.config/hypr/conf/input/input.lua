@@ -52,3 +52,5 @@ hl.device({
 	sensitivity = 1,
 	scroll_method = "2fg",
 })
+
+require("scripts.huaweiTab.touch-keep-focus")
