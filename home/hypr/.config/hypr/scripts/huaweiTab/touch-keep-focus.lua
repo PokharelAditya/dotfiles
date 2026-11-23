@@ -2,7 +2,7 @@
 -- Touch is inferred from click-style focus on huaweiTab while the cursor
 -- remains on another monitor. This does not block or synthesize touch events.
 local TOUCH_MONITOR = "huaweiTab"
-local DELAY_MS = 400
+local DELAY_MS = 1
 local CLICK_FOCUS_REASON = 16 -- FOCUS_REASON_CLICK in Hyprland 0.57.x
 
 local keep = hl.get_active_window()
