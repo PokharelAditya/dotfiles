@@ -147,6 +147,7 @@ alias tree='eza --tree --icons --color=always'
 alias vim='nvim'
 alias ff='clear; fastfetch'
 alias leetcode='nvim leetcode.nvim'
+alias cpl='fc -ln -1 | sed "s/^[[:space:]]*//" | wl-copy'
 
 # Custom Commands
 export PATH="$HOME/.local/bin:$PATH"

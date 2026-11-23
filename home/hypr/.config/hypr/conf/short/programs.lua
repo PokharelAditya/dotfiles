@@ -5,4 +5,4 @@
 TERM        = "kitty"
 FILE        = "thunar"
 MENU        = "rofi -show drun"
-BROWSER     = "brave"
+BROWSER     = "brave --profile-directory=\"Default\""
