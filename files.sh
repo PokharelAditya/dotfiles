@@ -4,6 +4,7 @@
 PRIVATE_HOME_FILES=(
     ".ssh"
     ".config/opencode"
+    ".local/share/opencode"
     ".config/omniroute"
     ".config/sunshine"
     ".config/kdeconnect"
