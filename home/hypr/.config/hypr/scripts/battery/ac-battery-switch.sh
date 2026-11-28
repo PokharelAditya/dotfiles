@@ -21,10 +21,11 @@ while true; do
             WALLPAPER="resume"
         fi
 
+        sleep 10
         sed -i -E "s/^(local refreshRate = )[0-9.]+/\1${RATE}/" "$FILE"
-        brightnessctl set "${BRIGHTNESS}%"
         asusctl leds set "${BACKLIT}"
         skwd-helm "${WALLPAPER}"
+        brightnessctl set "${BRIGHTNESS}%"
         LAST="$AC"
     fi
 

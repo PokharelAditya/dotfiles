@@ -1,5 +1,11 @@
 hl.config({
 	gestures = {
+    workspace_swipe_cancel_ratio= 0.32,
+    workspace_swipe_direction_lock = false,
+    workspace_swipe_distance = 250,
+    workspace_swipe_forever = true,
+    workspace_swipe_touch = true,
+    workspace_swipe_use_r = true
 	},
 })
 
@@ -37,4 +43,3 @@ hl.gesture({
 		hl.exec_cmd("playerctl next")
 	end,
 })
--- hl.gesture({ fingers = 4, direction = "horizontal", action = })

@@ -134,6 +134,7 @@
   "general": {
     "applyOnPickerMonitor": false,
     "language": "en-US",
+    "locale": "",
     "maxFps": 60,
     "notifyOnWallpaperChange": false,
     "randomRotate": false,
@@ -143,10 +144,24 @@
     {
       "enabled": true,
       "livePreview": false,
+      "name": "keyboard-backlit",
+      "output": "~/.config/hypr/scripts/keyboard/skwd-matugen-backlit.sh",
+      "reload": "~/.config/hypr/scripts/keyboard/skwd-matugen-backlit.sh",
+      "template": "~/.config/skwd-wall-v2/matugen/custom/keyboard-backlit.sh"
+    },
+    {
+      "livePreview": false,
+      "name": "",
+      "output": "",
+      "template": ""
+    },
+    {
+      "enabled": true,
+      "livePreview": false,
       "name": "kitty",
-      "output": "/home/adityaarch/.config/kitty/themes/skwd-matugen.conf",
-      "reload": "python3 /home/adityaarch/.config/skwd-wall-v2/matugen/custom/tint-colors.py /home/adityaarch/.config/kitty/themes/skwd-matugen.conf",
-      "template": "/home/adityaarch/.config/skwd-wall-v2/matugen/custom/kitty.conf"
+      "output": "~/.config/kitty/themes/skwd-matugen.conf",
+      "reload": "python3 ~/.config/skwd-wall-v2/matugen/custom/tint-colors.py ~/.config/kitty/themes/skwd-matugen.conf",
+      "template": "~/.config/skwd-wall-v2/matugen/custom/kitty.conf"
     }
   ],
   "matugen": {
@@ -397,6 +412,7 @@
   },
   "postProcessOnRestore": false,
   "postProcessing": [],
+  "semantic": {},
   "theme": {
     "authority": "skwd",
     "engine": "matugen",
@@ -410,5 +426,17 @@
       }
     ]
   },
-  "wallpaperMute": true
+  "transition": {
+    "durationMs": 1200,
+    "enabled": true,
+    "shader": "soft-warp-fade"
+  },
+  "wallpaperMute": true,
+  "weather": {
+    "enabled": false,
+    "semantic": {
+      "selection": "automatic"
+    },
+    "source": "semantic"
+  }
 }

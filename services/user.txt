@@ -2,5 +2,4 @@ dbus-broker.service
 mpd.service
 pipewire-pulse.service
 pipewire.service
-skwd-walld.service
 wireplumber.service

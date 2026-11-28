@@ -6,7 +6,7 @@ require("conf.binds.gestures")
 
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(MOD .. "CTRL + H", hl.dsp.exec_cmd("~/.config/hypr/scripts/exit-hyprland.sh"))
+hl.bind(CTRL .. ALT .. "delete", hl.dsp.exec_cmd("hyprshutdown"))
 hl.bind(MOD .. "R", hl.dsp.exec_cmd('hyprctl reload && notify-send "Hyprland" "Hyprland reloaded"'))
 hl.bind(MOD .. "Q", hl.dsp.window.close())
 hl.bind(MOD .. "CTRL + B", hl.dsp.exec_cmd('(killall waybar && notify-send "Waybar" "Waybar disabled") || (waybar -s ~/.config/waybar/themes/ml4w/black/style.css -c ~/.config/waybar/themes/ml4w/configLaptop & notify-send "Waybar" "Waybar enabled")'))
@@ -121,3 +121,4 @@ hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 
+hl.bind("XF86TouchpadToggle",  hl.dsp.exec_cmd("~/.config/hypr/scripts/touchpad/toggle.sh"), { locked = true })

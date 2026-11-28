@@ -2,42 +2,31 @@
 ---- WORKSPACE RULES  ----
 --------------------------
 
--- local function fit_widths(is_open)
---     local ws = hl.get_active_workspace()
---     if not ws then return end
---     if tostring(ws.name):match("^special:") then return end  -- leave special workspaces alone
---
---     local n = #hl.get_workspace_windows(ws.id)
---
---     if n == 1 then
---         hl.dispatch(hl.dsp.layout("colresize all 0.8"))
---     elseif n == 2 and is_open then
---         hl.dispatch(hl.dsp.layout("colresize all 0.5"))
---     end
--- end
---
--- hl.on("window.open",    function() fit_widths(true)  end)
--- hl.on("window.destroy", function() fit_widths(false) end)
-
 local specialWorkspaces = {
-  ["⌘"] = {
-    app = "kitty btop",
-    monitor = "lenovoMonitor",
-    key = "Escape",
-    full = 1
-  },
-  ["♬"] = {
-    app = "pear-desktop",
-    monitor = "huaweiTab",
-    key = "M",
-    full = 2
-  },
-  ["◉"] = {
-    app = "discord",
-    monitor = "lenovoMonitor",
-    key = "D",
-    full = 1
-  }
+	["⌘"] = {
+		app = "kitty btop",
+		monitors = {
+			{ name = "lenovoMonitor", full = 1 },
+			{ name = "huaweiTab", full = 2 },
+		},
+		key = "Escape",
+	},
+	["♬"] = {
+		app = "pear-desktop",
+		monitors = {
+			{ name = "huaweiTab", full = 2 },
+			{ name = "lenovoMonitor", full = 1 },
+		},
+		key = "M",
+	},
+	["◉"] = {
+		app = "discord",
+		monitors = {
+			{ name = "lenovoMonitor", full = 1 },
+			{ name = "huaweiTab", full = 2 },
+		},
+		key = "D",
+	},
 }
 
 hl.on("workspace.created", function(ws)
@@ -48,32 +37,56 @@ hl.on("workspace.created", function(ws)
 	end
 end)
 
-for name,pro in pairs(specialWorkspaces) do
-	hl.window_rule({
-		name = "fs-" .. name,
-		match = { workspace = "special:" .. name },
-		fullscreen_state = pro.full,
-	})
+for name, pro in pairs(specialWorkspaces) do
+	local ws = "special:" .. name
 
-  hl.bind(MOD .. pro.key, function()
-      local ws = "special:" .. name
+	hl.bind(MOD .. pro.key, function()
+		local w = hl.get_active_window()
+		local focused = w ~= nil and w.workspace ~= nil and w.workspace.name == ws
 
-      local visible = false
-      for _, m in ipairs(hl.get_monitors()) do
-          local sp = m.active_special_workspace
-          if sp and sp.name == ws then visible = true end
-      end
+		if focused then
+			hl.dispatch(hl.dsp.workspace.toggle_special(name))
+		else
+			local active = {}
+			local visible = false
+			for _, m in ipairs(hl.get_monitors()) do
+				local sp = m.active_special_workspace
+				if sp and sp.name == ws then
+					visible = true
+				end
+				active[m.name] = true
+			end
 
-      local w = hl.get_active_window()
-      local focused = w ~= nil and w.workspace ~= nil and w.workspace.name == ws
+			local monitor = nil
+			local full = 1
+			for _, entry in ipairs(pro.monitors) do
+				if active[entry.name] then
+					monitor = entry.name
+					full = entry.full
+					break
+				end
+			end
 
-      if focused then
-          hl.dispatch(hl.dsp.workspace.toggle_special(name))
-      elseif visible then
-          hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
-      else
-          hl.dispatch(hl.dsp.focus({ monitor = pro.monitor }))
-          hl.dispatch(hl.dsp.workspace.toggle_special(name))
-      end
-  end)
+			hl.window_rule({
+				name = "fs-" .. name,
+				match = { workspace = "special:" .. name },
+				fullscreen_state = full,
+			})
+
+			if visible then
+				if monitor then
+					hl.dispatch(hl.dsp.focus({ monitor = monitor }))
+				end
+			else
+				if monitor then
+					hl.dispatch(hl.dsp.focus({ monitor = monitor }))
+				end
+				hl.dispatch(hl.dsp.workspace.toggle_special(name))
+			end
+		end
+	end)
 end
+
+hl.on("monitor.added", function()
+  hl.exec_cmd("systemctl --user restart skwd-walld.service")
+end)

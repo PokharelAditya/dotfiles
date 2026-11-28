@@ -22,6 +22,7 @@ hl.monitor({
     mode = resolution.."@"..refreshRate,
     position = position,
     scale = 1.0,
+    -- scale = 1.5,
     bitdepth = 10,
     vrr = 0
 })

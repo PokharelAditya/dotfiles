@@ -105,7 +105,11 @@ local function schedule_restore(monitor, window)
         end
 
         local old_window = previous.window
-        if old_window ~= nil and old_window.mapped and old_window.visible
+        if previous.special ~= nil and not same_monitor(target, monitor) then
+            -- Cross-monitor window focus can pull the special workspace onto huaweiTab.
+            -- Focusing its monitor lets Hyprland select a window on that workspace.
+            focus_without_warp({ monitor = target.name })
+        elseif old_window ~= nil and old_window.mapped and old_window.visible
             and not old_window.hidden and same_monitor(old_window.monitor, target) then
             focus_without_warp({ window = "address:" .. old_window.address })
         else
