@@ -18,7 +18,7 @@
       "handMoveRibbon": true,
       "handMoveShuffle": true,
       "handMoveSpiral": true,
-      "lastAppliedKey": "video:Videos/GTR-Silver.mp4",
+      "lastAppliedKey": "video:Videos/NFS-GTR.mp4",
       "roundCorners": false,
       "savedLayouts": [
         {
@@ -150,10 +150,11 @@
       "template": "~/.config/skwd-wall-v2/matugen/custom/keyboard-backlit.sh"
     },
     {
+      "enabled": true,
       "livePreview": false,
-      "name": "",
-      "output": "",
-      "template": ""
+      "name": "hyprland",
+      "output": "~/.config/hypr/conf/looks/skwd-matugen.lua",
+      "template": "~/.config/skwd-wall-v2/matugen/custom/hyprland.lua"
     },
     {
       "enabled": true,

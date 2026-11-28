@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-asusctl aura effect static -c 4d00ff
+asusctl aura effect static -c ff00b3

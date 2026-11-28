@@ -2,9 +2,7 @@
 ---- COLORS ----
 ----------------
 
-ACTIVE = "#66B2FF"
-INACTIVE = "#696969"
-OVERVIEW = "#000000"
+require("conf.looks.skwd-matugen")
 
 ACTIVE_BORDER = {
 	colors = {
@@ -52,11 +50,11 @@ INACTIVE_SHADOW = {
 
 OVERVIEW_SHADOW = {
 	colors = {
-    OVERVIEW .. "AA",
-    OVERVIEW .. "60",
     OVERVIEW .. "20",
-    OVERVIEW .. "60",
-    OVERVIEW .. "AA",
+    OVERVIEW .. "05",
+    OVERVIEW .. "00",
+    OVERVIEW .. "05",
+    OVERVIEW .. "20",
   },
 	angle = 0,
 }

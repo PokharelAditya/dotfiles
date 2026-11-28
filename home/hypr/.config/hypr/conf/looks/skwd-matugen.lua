@@ -1,0 +1,3 @@
+ACTIVE = "#c775b4"
+INACTIVE = "#4f444a"
+OVERVIEW = "#68355c"
